@@ -1,5 +1,3 @@
-# Authentication
-
 ## Technique
 
 - TOTP

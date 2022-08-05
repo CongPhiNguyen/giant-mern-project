@@ -1,56 +1,41 @@
 import "./App.css";
 import "./app.scss";
 import { useEffect } from "react";
-// import { BrowserRouter } from "react-router-dom";
-// import Routers from "./routes";
-import Login from "./pages/login";
-import { useState, useRef } from "react";
-import { ToastContainer, toast } from "react-toastify";
+import Login from "./authentication/pages/login";
+import SignUp from "./authentication/pages/signup";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import SignUp from "./pages/signup";
-import Home from "./pages/home";
+import Home from "./pages/Home";
+import Header from "./shared/components/Header";
+import ViewImage from "./album/pages/ViewImage";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Navigate,
+} from "react-router-dom";
+
 const App = () => {
-  const [appState, setAppState] = useState("login");
   useEffect(() => {
     document.title = "Authentication Application";
-  });
-
-  const changeComponent = (component) => {
-    setAppState(component);
-  };
-
+  }, []);
   return (
-    <div className="main-app-container">
-      <div className="component-navigation">
-        <p
-          className={appState == "login" ? "nav active" : "nav"}
-          onClick={() => {
-            setAppState("login");
-          }}
-        >
-          Login
-        </p>
-        <p
-          className={appState == "signup" ? "nav active" : "nav"}
-          onClick={() => {
-            setAppState("signup");
-          }}
-        >
-          SignUp
-        </p>
-      </div>
-      <div className="component-container">
-        {appState == "login" ? (
-          <Login changeComponent={(component) => changeComponent()} />
-        ) : appState == "signup" ? (
-          <SignUp changeComponent={(component) => changeComponent()} />
-        ) : (
-          <Home changeComponent={(component) => changeComponent()} />
-        )}
-      </div>
-
+    <Router>
+      <Header />
+      <Routes>
+        <Route path="">
+          <Route path="" element={<Home />} />
+          <Route path="home" element={<Home />} />
+          <Route path="sign-in" element={<Login />} />
+          <Route path="sign-up" element={<SignUp />} />
+          {/* <Route path="*" element={<Navigate to="404-not-found" replace />} /> */}
+        </Route>
+        <Route path="image">
+          <Route path="" element={<ViewImage />} />
+        </Route>
+      </Routes>
       <ToastContainer />
-    </div>
+    </Router>
   );
 };
 

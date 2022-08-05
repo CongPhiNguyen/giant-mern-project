@@ -1,21 +1,25 @@
 import React from "react";
-import { Route, Routes, Navigate } from "react-router-dom";
-import Login from "./pages/login.js";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Navigate,
+} from "react-router-dom";
+import Login from "./authentication/pages/login.js";
+import Home from "./pages/home.js";
 
 const Routers = () => {
-  // waiting
-  const loading = (
-    <div>
-      <h1>Loading...</h1>
-    </div>
-  );
   return (
-    <React.Suspense fallback={loading}>
+    <Router>
       <Routes>
-        <Route path="/login" name="Login" component={<Login />}></Route>
-        <Route path="/" name="Login" component={<Login />}></Route>
+        <Route path="/" name="Home" component={<Home />}></Route>
+        <Route path="">
+          <Route path="home" element={<Home />} />
+          <Route path="login" element={<Login />} />
+          {/* <Route path="*" element={<Navigate to="404-not-found" replace />} /> */}
+        </Route>
       </Routes>
-    </React.Suspense>
+    </Router>
   );
 };
 
