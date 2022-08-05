@@ -1,8 +1,9 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
+import "./Header.scss";
 function Header() {
   return (
-    <div className="component-navigation">
+    <header className="app-navigation">
       <NavLink className="nav" to="/home">
         Home
       </NavLink>
@@ -12,7 +13,10 @@ function Header() {
       <NavLink className="nav" to="/sign-up">
         Sign-up
       </NavLink>
-    </div>
+      <NavLink className="nav" to="/image/">
+        Image
+      </NavLink>
+    </header>
   );
 }
 
