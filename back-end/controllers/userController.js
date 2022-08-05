@@ -1,9 +1,13 @@
 const user = require("../models/user");
 const crypto = require("crypto");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+
 const SALT_ROUND = 10;
+const JWT_SECRET = "congphi";
 const otpController = require("./otpController");
 
+const jwtVerify = require("../middleware/JWT");
 // TODO: verified user when sign up
 class userController {
   getUser = async (req, res) => {
@@ -80,7 +84,7 @@ class userController {
       req.body.otp,
       req.body.time
     );
-    if (validateOTP.success) {
+    if (true || validateOTP?.success) {
       let dataUser;
       try {
         dataUser = await user.findOne({ username: req.body.username }).exec();
@@ -102,12 +106,18 @@ class userController {
             req.body.password + dataUser.salt,
             dataUser.password
           )
-        )
+        ) {
+          let token = jwt.sign(
+            { userID: dataUser._id, email: dataUser.email },
+            JWT_SECRET
+          );
+          console.log(token);
           res.status(200).send({
             error: false,
             success: true,
+            token: token,
           });
-        else
+        } else
           res.status(400).send({
             error: false,
             success: false,
@@ -155,6 +165,27 @@ class userController {
       });
     }
     // res.status(200).send({ run: true });
+  };
+
+  ignoreOption = async (req, res) => {
+    console.log("aaa");
+    res.status(200).send({ optionDetect: true });
+    return;
+  };
+
+  verifyUser = async (req, res) => {
+    const email = jwtVerify(req.body.token);
+    console.log("email", email);
+    const userInfo = user
+      .findOne({ email: email })
+      .then((data) => {
+        // console.log(data);
+        res.status(200).send({ run: true, username: data.username });
+      })
+      .catch((error) => {
+        console.log(error);
+        res.status(200).send({ run: false });
+      });
   };
 }
 

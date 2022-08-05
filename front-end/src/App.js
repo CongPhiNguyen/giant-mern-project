@@ -7,7 +7,6 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Home from "./pages/Home";
 import Header from "./shared/components/Header";
-import ViewImage from "./album/pages/ViewImage";
 import {
   BrowserRouter as Router,
   Route,
@@ -29,9 +28,6 @@ const App = () => {
           <Route path="sign-in" element={<Login />} />
           <Route path="sign-up" element={<SignUp />} />
           {/* <Route path="*" element={<Navigate to="404-not-found" replace />} /> */}
-        </Route>
-        <Route path="image">
-          <Route path="" element={<ViewImage />} />
         </Route>
       </Routes>
       <ToastContainer />
