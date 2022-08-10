@@ -1,14 +1,19 @@
 import React, { useState, useRef } from "react";
-import "./login.scss";
+
 import axios from "axios";
 import { toast } from "react-toastify";
 import ReCAPTCHA from "react-google-recaptcha";
+import { useNavigate } from "react-router-dom";
+
+import "./login.scss";
 // TODO: put here into enviroment varibale
 const CAPTCHA_SITE_KEY = "6LcjxgkhAAAAAHIhfKuWWgc07YASZozNywrkQM_6";
 const CAPTCHA_SECRET_KEY = "6LcjxgkhAAAAAMZvHXuGUUIV--2dNrP9sjKzbh1i";
 
 // TODO: count login attempt
 function Login(props) {
+  const navigate = useNavigate();
+
   // Variable
   const [isUsernameExist, setIsUsernameExist] = useState(true);
   const [isValidPassword, setIsValidPassword] = useState(false);
@@ -82,13 +87,14 @@ function Login(props) {
       .then((data) => {
         if (data.data.success === true) {
           toast("Login successfully");
-          props.changeComponent("home");
+          localStorage.setItem("jwt", data.data.token);
+          navigate("/");
         } else {
           toast("Login failed");
         }
       })
       .catch((error) => {
-        toast("Login failed!");
+        console.log(error);
       });
   };
 
@@ -101,10 +107,11 @@ function Login(props) {
       toast("Username is not exist");
       return;
     }
-    if (!captchaVerify) {
-      toast("You must verify the captcha before request OTP");
-      return;
-    }
+    // TODO: open the captcha
+    // if (!captchaVerify) {
+    //   toast("You must verify the captcha before request OTP");
+    //   return;
+    // }
 
     axios
       .post("http://localhost:5000/api/otp/make-otp-login", {
@@ -190,8 +197,8 @@ function Login(props) {
         {/* Captcha */}
         {captchaError ? (
           <p className="note-captcha">
-            Incase captcha didn't show up, please <a href="/">refesh</a> the
-            page
+            Incase captcha didn't show up, please <a href="/sign-in">refesh</a>{" "}
+            the page
           </p>
         ) : null}
 
