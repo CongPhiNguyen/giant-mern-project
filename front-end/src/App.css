@@ -36,3 +36,11 @@
     transform: rotate(360deg);
   }
 }
+
+#root {
+  font-size: 62.5%;
+}
+
+.app-container {
+  margin-top: 0.2em;
+}

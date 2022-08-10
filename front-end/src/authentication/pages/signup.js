@@ -165,7 +165,7 @@ export default function SignUp(props) {
           <input
             type="text"
             id="username"
-            class="input-box"
+            className="input-box"
             ref={pageRef.username}
             onBlur={() => {
               checkUsernameExist(pageRef.username.current.value);
@@ -182,7 +182,7 @@ export default function SignUp(props) {
           <input
             type="email"
             id="email"
-            class="input-box"
+            className="input-box"
             ref={pageRef.email}
             onBlur={() => {
               checkEmailExist(pageRef.email.current.value);
@@ -198,7 +198,7 @@ export default function SignUp(props) {
           <input
             type="password"
             id="password"
-            class="input-box"
+            className="input-box"
             ref={pageRef.password}
           />
         </div>
@@ -209,7 +209,7 @@ export default function SignUp(props) {
           <input
             type="password"
             id="password"
-            class="input-box"
+            className="input-box"
             ref={pageRef.password}
           />
         </div>
