@@ -4,6 +4,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import ReCAPTCHA from "react-google-recaptcha";
 import { useNavigate } from "react-router-dom";
+import { cookiesUtil } from "../../utilities/cookies";
 
 import "./login.scss";
 // TODO: put here into enviroment varibale
@@ -87,7 +88,9 @@ function Login(props) {
       .then((data) => {
         if (data.data.success === true) {
           toast("Login successfully");
-          localStorage.setItem("jwt", data.data.token);
+          // localStorage.setItem("jwt", data.data.token);
+          cookiesUtil.set("_username", username);
+          cookiesUtil.setAccessToken(data.data.token);
           navigate("/");
         } else {
           toast("Login failed");
@@ -154,7 +157,7 @@ function Login(props) {
   };
 
   return (
-    <div className="app-container">
+    <div className="app-1-container">
       <div className="login-container">
         <h1 className="login-title">LOGIN</h1>
 

@@ -1,12 +1,18 @@
-import "./App.css";
-import "./app.scss";
 import { useEffect } from "react";
-import Login from "./authentication/pages/login";
-import SignUp from "./authentication/pages/signup";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Home from "./pages/Home";
+
+import "./App.css";
+import "./app.scss";
+
+import Home from "./shared/pages/Home";
 import Header from "./shared/components/Header";
+import Login from "./authentication/pages/login";
+import SignUp from "./authentication/pages/signup";
+import NotFound from "./shared/pages/404";
+import ViewImage from "./album/pages/ViewImage";
+import UploadImage from "./album/pages/UploadImage";
+
 import {
   BrowserRouter as Router,
   Route,
@@ -21,15 +27,22 @@ const App = () => {
   return (
     <Router>
       <Header />
-      <Routes>
-        <Route path="">
-          <Route path="" element={<Home />} />
-          <Route path="home" element={<Home />} />
-          <Route path="sign-in" element={<Login />} />
-          <Route path="sign-up" element={<SignUp />} />
-          {/* <Route path="*" element={<Navigate to="404-not-found" replace />} /> */}
-        </Route>
-      </Routes>
+      <div className="app-container">
+        <Routes>
+          <Route path="">
+            <Route path="" element={<Home />} />
+            <Route path="home" element={<Home />} />
+            <Route path="sign-in" element={<Login />} />
+            <Route path="sign-up" element={<SignUp />} />
+            <Route path="404-not-found" element={<NotFound />} />
+            <Route path="image">
+              <Route path="" element={<ViewImage />} />
+              <Route path="upload" element={<UploadImage />} />
+            </Route>
+            <Route path="*" element={<Navigate to="404-not-found" replace />} />
+          </Route>
+        </Routes>
+      </div>
       <ToastContainer />
     </Router>
   );

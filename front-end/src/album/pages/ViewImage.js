@@ -1,13 +1,12 @@
 import React from "react";
-import ImgDisplayer from "../components/ImgDisplayer";
+import ImageController from "../components/ImageController";
+
 export default function ViewImage() {
   return (
-    <div className="app-container">
-      <ImgDisplayer
-        image={
-          "https://i.pinimg.com/564x/d5/36/0b/d5360b3d7960037bc5bcf3c14159db9d.jpg"
-        }
-      ></ImgDisplayer>
+    <div className="page-container">
+      <div className="content-container">
+        <ImageController></ImageController>
+      </div>
     </div>
   );
 }

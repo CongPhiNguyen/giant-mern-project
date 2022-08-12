@@ -1,0 +1,22 @@
+const DEFAULT_TILE_SIZE = 256;
+const OUTPUT_DIR = "output/";
+const OUTPUT_FILE_NAME = "output.zip";
+
+const sharp = require("sharp");
+const fs = require("fs");
+
+const createDZIFromBuffer = (buffer, path) => {
+  sharp(buffer)
+    .tile({
+      size: DEFAULT_TILE_SIZE,
+    })
+    .toFile(path + "output")
+    .then((info) => {
+      console.log(info);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+module.exports = createDZIFromBuffer;

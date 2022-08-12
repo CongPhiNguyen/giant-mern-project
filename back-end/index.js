@@ -1,15 +1,23 @@
 const express = require("express");
-const bodyParser = require("body-parser");
 const cors = require("cors");
 const connectDB = require("./config/dbConfig.js"); // connect MongoDB
 const PORT = process.env.PORT || 5000; // port number
 const app = express();
 const route = require("./routers/index"); // router impl
+// const multer = require("multer");
+const bodyParser = require("body-parser");
 
+app.use("/privates", express.static("./privates"));
+// const upload = multer();
 //some middleware
-app.use(bodyParser.json({ limit: 10000 }));
-app.use(bodyParser.urlencoded({ extended: true, limit: 10000 }));
-app.use(cors());
+app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
+// for parsing application/json
+app.use(express.json());
+// for parsing application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: true }));
+// for parsing multipart/form-data
+// app.use(upload.array());
+app.use(express.static("public"));
 
 //connect to MongoDB
 connectDB();

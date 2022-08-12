@@ -5,6 +5,12 @@
   border-right: none;
   justify-content: space-between;
   font-size: 1rem;
+  position: fixed;
+  width: 100%;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  background-color: #fff;
   .left-link {
     padding: 0.6em;
   }

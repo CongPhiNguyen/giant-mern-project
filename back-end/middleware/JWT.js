@@ -23,9 +23,7 @@ module.exports = (token) => {
     if (!token) {
       throw new Error("Authentication failed!");
     }
-    const decodeToken = jwt.verify(token, JWT_SECRET);
-    console.log("decodeToken.email", decodeToken.email);
-    return decodeToken.email;
+    
   } catch (err) {
     console.log("error when decode");
     const error = { message: "Authentication failed!", code: 401 };

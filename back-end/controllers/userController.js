@@ -7,7 +7,6 @@ const SALT_ROUND = 10;
 const JWT_SECRET = "congphi";
 const otpController = require("./otpController");
 
-const jwtVerify = require("../middleware/JWT");
 // TODO: verified user when sign up
 class userController {
   getUser = async (req, res) => {
@@ -108,7 +107,11 @@ class userController {
           )
         ) {
           let token = jwt.sign(
-            { userID: dataUser._id, email: dataUser.email },
+            {
+              userID: dataUser._id,
+              email: dataUser.email,
+              username: dataUser.username,
+            },
             JWT_SECRET
           );
           console.log(token);
@@ -174,17 +177,22 @@ class userController {
   };
 
   verifyUser = async (req, res) => {
-    const email = jwtVerify(req.body.token);
-    console.log("email", email);
+    if (!req.body.token)
+      return res.status(401).send({ message: "Unathorized token", run: false });
+    const decodeToken = jwt.verify(req.body.token, JWT_SECRET);
+
     const userInfo = user
-      .findOne({ email: email })
+      .findOne({ email: decodeToken.email, username: decodeToken.username })
       .then((data) => {
         // console.log(data);
-        res.status(200).send({ run: true, username: data.username });
+        if (data !== null)
+          res.status(200).send({ run: true, username: data.username });
+        else
+          return res.status(404).send({ message: "Use notfound", run: false });
       })
       .catch((error) => {
         console.log(error);
-        res.status(200).send({ run: false });
+        res.status(400).send({ run: false });
       });
   };
 }

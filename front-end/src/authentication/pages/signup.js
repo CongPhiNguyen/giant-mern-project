@@ -155,7 +155,7 @@ export default function SignUp(props) {
   };
 
   return (
-    <div className="app-container">
+    <div className="app-1-container">
       <div className="signup-container">
         <h1 className="signup-title">SIGN UP</h1>
         <div className="input-container">
@@ -208,7 +208,7 @@ export default function SignUp(props) {
           </label>
           <input
             type="password"
-            id="password"
+            id="repeat-password"
             className="input-box"
             ref={pageRef.password}
           />
