@@ -7,8 +7,10 @@ const fs = require("fs");
 
 const createDZIFromBuffer = (buffer, path) => {
   sharp(buffer)
+    .png()
     .tile({
-      size: DEFAULT_TILE_SIZE,
+      size: 64,
+      overlap: 0,
     })
     .toFile(path + "output")
     .then((info) => {
