@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import OpenSeadragon from "openseadragon";
 
-import "./ImageViewer.scss";
-export default function ImageViewer() {
+import "./ImageViewing.scss";
+
+export default function ImageViewing() {
   const [viewer1, setViewer1] = useState();
   useEffect(() => {
     setViewer1(

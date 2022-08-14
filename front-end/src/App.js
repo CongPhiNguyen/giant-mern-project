@@ -9,8 +9,9 @@ import Header from "./shared/components/Header";
 import Login from "./authentication/pages/login";
 import SignUp from "./authentication/pages/signup";
 import NotFound from "./shared/pages/404";
-import ViewImage from "./album/pages/ViewImage";
-import UploadImage from "./album/pages/UploadImage";
+import ImageViewing from "./album/pages/ImageViewing";
+import ImageControlling from "./album/pages/ImageControlling";
+import ImagesUploading from "./album/pages/ImagesUploading";
 
 import {
   BrowserRouter as Router,
@@ -35,8 +36,9 @@ const App = () => {
             <Route path="sign-up" element={<SignUp />} />
             <Route path="404-not-found" element={<NotFound />} />
             <Route path="image">
-              <Route path="" element={<ViewImage />} />
-              <Route path="upload" element={<UploadImage />} />
+              <Route path="" element={<ImageControlling />} />
+              <Route path="view" element={<ImageViewing />} />
+              <Route path="upload" element={<ImagesUploading />} />
             </Route>
             <Route path="*" element={<Navigate to="404-not-found" replace />} />
           </Route>

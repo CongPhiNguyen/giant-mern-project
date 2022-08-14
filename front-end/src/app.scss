@@ -12,26 +12,22 @@
   background-color: #c9c9c9;
   margin-top: 5.3em;
   min-height: calc(100vh - 5.3em);
-}
-
-.page-container {
-  max-width: 120em;
-  width: 80%;
-  margin: 0em auto;
-  padding-top: 3em;
-}
-
-.content-container {
-  background-color: #fff;
-}
-
-.component-container {
-  margin: auto;
+  .page-container {
+    max-width: 120em;
+    width: 80%;
+    margin: 0em auto;
+    padding-top: 3em;
+    position: relative;
+    .content-container {
+      background-color: #fff;
+      margin: auto;
+    }
+  }
 }
 
 @media only screen and (max-width: 1400px) {
   .content-container {
-    margin: 0em 4em;
+    margin: 0em 4em !important;
   }
 }
 

@@ -12,9 +12,16 @@ export default function ImageController() {
           navigate("/image/upload");
         }}
       >
-        Upload single image
+        Upload multi image
       </p>
-      <p className="feature-selection">Upload multi images</p>
+      <p
+        className="feature-selection"
+        onClick={() => {
+          navigate("/image/view");
+        }}
+      >
+        View image
+      </p>
     </div>
   );
 }

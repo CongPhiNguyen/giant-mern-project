@@ -49,6 +49,7 @@ export default function UploadingBox() {
         console.log("err", err);
       });
   };
+
   return (
     <div className="uploading-box-container">
       <div className="heading">
