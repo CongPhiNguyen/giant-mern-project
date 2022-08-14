@@ -12,21 +12,35 @@
   z-index: 100;
   background-color: #fff;
   .left-link {
-    padding: 0.6em;
+    display: flex;
   }
   .right-link {
-    padding: 0.6em 0;
-    .nav {
-      padding: 0.4em 0.4em;
-      border: 0.1em solid #333;
-      margin: 0.4em 0.4em;
-    }
+    display: flex;
   }
   .nav {
-    padding: 0.4em 1em;
+    padding: 0.4em 0.4em;
     border: 0.1em solid #333;
-    margin: 1em;
+    margin: 0.4em 0.4em;
     text-decoration: none;
+    display: block;
+    position: relative;
+    .profile-nav {
+      position: absolute;
+      top: calc(100% + 0.1em);
+      left: -0.1em;
+      width: calc(100% + 0.2em);
+      background-color: #fff;
+      list-style: none;
+      .profile-nav-item {
+        border: 1px solid #333;
+        padding: 0.2em 0.8em;
+        width: 100%;
+        text-align: right;
+        &:hover {
+          background-color: #e4e4e4;
+        }
+      }
+    }
   }
   .nav:hover {
     background-color: #e3e3e3;

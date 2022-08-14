@@ -5,14 +5,18 @@ import { toast } from "react-toastify";
 import ReCAPTCHA from "react-google-recaptcha";
 import { useNavigate } from "react-router-dom";
 import { cookiesUtil } from "../../utilities/cookies";
+import { parseJwt } from "../../utilities/jwt";
+import { useDispatch } from "react-redux";
+import { setCurrentUser } from "../../shared/sharedSlice";
 
 import "./login.scss";
 // TODO: put here into enviroment varibale
 const CAPTCHA_SITE_KEY = "6LcjxgkhAAAAAHIhfKuWWgc07YASZozNywrkQM_6";
-const CAPTCHA_SECRET_KEY = "6LcjxgkhAAAAAMZvHXuGUUIV--2dNrP9sjKzbh1i";
+// const CAPTCHA_SECRET_KEY = "6LcjxgkhAAAAAMZvHXuGUUIV--2dNrP9sjKzbh1i";
 
 // TODO: count login attempt
-function Login(props) {
+function Login() {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   // Variable
@@ -21,8 +25,8 @@ function Login(props) {
   const [failedPasswordMessage, setFailedPasswordMessage] = useState("");
   const [countDownTime, setCountDownTime] = useState(0);
   const [captchaVerify, setCaptchaVerify] = useState(false);
-  const [errorCaptcha, setErrorCaptcha] = useState(false);
   const [loginAttempt, setLoginAttempt] = useState(false);
+
   // Ref
   const pageRef = {
     usernameRef: useRef(null),
@@ -39,9 +43,6 @@ function Login(props) {
     toast("Captcha expired!");
     console.log("Captcha expired!");
     setCaptchaVerify(false);
-  };
-  const captchaError = (value) => {
-    setErrorCaptcha(true);
   };
 
   // Validation section
@@ -76,6 +77,33 @@ function Login(props) {
     return true;
   };
 
+  const loginSuccessHandle = (username, token) => {
+    toast("Login successfully");
+    // localStorage.setItem("jwt", data.data.token);
+    cookiesUtil.set("_username", username);
+    cookiesUtil.setAccessToken(token);
+    const decodeToken = () => {
+      let jwtInfor;
+      try {
+        console.log(cookiesUtil.getAccessToken());
+        jwtInfor = parseJwt(cookiesUtil.getAccessToken());
+
+        if (jwtInfor.username) {
+          dispatch(
+            setCurrentUser({
+              username: jwtInfor.username,
+              email: jwtInfor.email,
+            })
+          );
+        }
+      } catch (err) {
+        console.log("err", err);
+        navigate("/sign-in");
+      }
+    };
+    decodeToken();
+    navigate("/");
+  };
   // Login and otp section
   const checkCorrectLoginInfo = async (username, password, otp) => {
     await axios
@@ -87,11 +115,7 @@ function Login(props) {
       })
       .then((data) => {
         if (data.data.success === true) {
-          toast("Login successfully");
-          // localStorage.setItem("jwt", data.data.token);
-          cookiesUtil.set("_username", username);
-          cookiesUtil.setAccessToken(data.data.token);
-          navigate("/");
+          loginSuccessHandle(username, data.data.token);
         } else {
           toast("Login failed");
         }
@@ -198,19 +222,16 @@ function Login(props) {
         ) : null}
 
         {/* Captcha */}
-        {captchaError ? (
-          <p className="note-captcha">
-            Incase captcha didn't show up, please <a href="/sign-in">refesh</a>{" "}
-            the page
-          </p>
-        ) : null}
+        <p className="note-captcha">
+          Incase captcha didn't show up, please <a href="/sign-in">refesh</a>{" "}
+          the page
+        </p>
 
         <div className="captcha-container">
           <ReCAPTCHA
             sitekey={CAPTCHA_SITE_KEY}
             onChange={captchaChange}
             onExpired={captchaExpire}
-            onError={captchaError}
           />
         </div>
 

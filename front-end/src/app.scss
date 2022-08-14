@@ -3,3 +3,44 @@
   padding: 0;
   box-sizing: border-box;
 }
+
+#root {
+  font-size: 62.5%;
+}
+
+.app-container {
+  background-color: #c9c9c9;
+  margin-top: 5.3em;
+  min-height: calc(100vh - 5.3em);
+}
+
+.page-container {
+  max-width: 120em;
+  width: 80%;
+  margin: 0em auto;
+  padding-top: 3em;
+}
+
+.content-container {
+  background-color: #fff;
+}
+
+.component-container {
+  margin: auto;
+}
+
+@media only screen and (max-width: 1400px) {
+  .content-container {
+    margin: 0em 4em;
+  }
+}
+
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Old versions of Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Edge, Opera and Firefox */
+}

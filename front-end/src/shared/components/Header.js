@@ -10,19 +10,19 @@ import { setCurrentUser } from "../sharedSlice";
 import "./Header.scss";
 
 function Header() {
-  const userInfo = useSelector((state) => {
-    console.log(state);
-    return state.sharedSlice.currentUser;
-  });
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [isOpenProfileNav, setOpenProfileNav] = useState(false);
+
+  const userInfo = useSelector((state) => state.sharedSlice.currentUser);
 
   useEffect(() => {
     const decodeToken = () => {
       let jwtInfor;
       try {
+        // console.log(cookiesUtil.getAccessToken());
         jwtInfor = parseJwt(cookiesUtil.getAccessToken());
+
         if (jwtInfor.username) {
           dispatch(
             setCurrentUser({
@@ -34,28 +34,47 @@ function Header() {
       } catch (err) {
         navigate("/sign-in");
       }
-      // Handle JWT
-      // console.log(jwtInfor);
     };
     decodeToken();
-  }, []);
+    // eslint-disable-next-line
+  }, [userInfo.username]);
+
+  const logOut = () => {
+    cookiesUtil.remove("_jwt");
+    dispatch(setCurrentUser({}));
+    navigate("/sign-in");
+  };
+
   return (
     <header className="app-navigation">
       <div className="left-link">
-        <NavLink className="nav" to="/home">
-          Home
-        </NavLink>
-        <NavLink className="nav" to="/image/">
-          Image
-        </NavLink>
+        {userInfo.username && (
+          <React.Fragment>
+            <NavLink className="nav" to="/home">
+              Home
+            </NavLink>
+            <NavLink className="nav" to="/image/">
+              Image
+            </NavLink>
+          </React.Fragment>
+        )}
       </div>
       <div className="right-link">
         {userInfo.username ? (
-          <React.Fragment>
-            <NavLink className="nav" to="/profile">
-              {userInfo.username}
-            </NavLink>
-          </React.Fragment>
+          <nav
+            className="nav noselect"
+            onClick={() => setOpenProfileNav((prev) => !prev)}
+          >
+            {userInfo.username}
+            {isOpenProfileNav && (
+              <ul className="profile-nav">
+                <li className="profile-nav-item">Profile</li>
+                <li className="profile-nav-item" onClick={logOut}>
+                  Log out
+                </li>
+              </ul>
+            )}
+          </nav>
         ) : (
           <React.Fragment>
             <NavLink className="nav" to="/sign-in">

@@ -10,6 +10,15 @@ export default function SignUp(props) {
   const [signUpState, setSignUpState] = useState("signup");
   const [countDownTime, setCountDownTime] = useState(0);
   const [captchaVerify, setCaptchaVerify] = useState(false);
+  const [currentStep, setCurrentStep] = useState(1);
+  const [currentUsername, setCurrentUsername] = useState("");
+
+  const pageRef = {
+    username: useRef(null),
+    email: useRef(null),
+    password: useRef(null),
+    otpRef: useRef(null),
+  };
 
   const checkUsernameExist = (username) => {
     axios
@@ -115,13 +124,6 @@ export default function SignUp(props) {
       });
   };
 
-  const pageRef = {
-    username: useRef(null),
-    email: useRef(null),
-    password: useRef(null),
-    otpRef: useRef(null),
-  };
-
   const emailCheckComp = () => {
     if (isEmailExist) {
       return <p className="error-input">Email is exist</p>;
@@ -130,8 +132,6 @@ export default function SignUp(props) {
     } else return null;
   };
 
-  const [currentStep, setCurrentStep] = useState(1);
-  const [currentUsername, setCurrentUsername] = useState("");
   const submitOTP = (username, otp) => {
     // console.log(otp);
     axios
