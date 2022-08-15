@@ -1,0 +1,32 @@
+.displayer-container {
+  padding: 1em;
+  .image-symbols {
+    display: flex;
+    .image-left {
+      width: 8em;
+      height: 12em;
+      object-fit: cover;
+      border-top-left-radius: 2em;
+      border-bottom-left-radius: 2em;
+    }
+    .images-right {
+      display: flex;
+      flex-direction: column;
+      .image-right {
+        width: 8em;
+        height: 6em;
+        object-fit: cover;
+      }
+      .image-top {
+        border-top-right-radius: 2em;
+      }
+      .image-bottom {
+        border-bottom-right-radius: 2em;
+      }
+    }
+  }
+  .name-tag {
+    font-size: 1.6em;
+    margin-top: 0.2em;
+  }
+}

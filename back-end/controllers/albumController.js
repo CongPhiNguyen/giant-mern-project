@@ -16,14 +16,18 @@ class albumController {
     // mongoose.model('albums').schema.path()
     // console.log("schemas", schemas);
     // console.log(mongoose.modelNames());
-    console.log(mongoose.model("users").schema);
+    // console.log(mongoose.model("users").schema);
 
-    console.log(req.query);
-    // const userInfo = await user
-    //   .findOne({ username: req.query.username })
-    //   .populate({ path: "albums", options: { strictPopulate: false } });
-    // console.log("userInfo", userInfo);
-    res.status(200).send({ run: true });
+    // console.log(req.query);
+    const userInfo = await user
+      .findOne({ username: req.query.username })
+      .populate({ path: "ownAlbums", options: { strictPopulate: false } });
+    console.log("userInfo", userInfo);
+    if (userInfo === null) {
+      res.status(200).send({ run: false });
+    } else {
+      res.status(200).send({ run: true, albumList: userInfo.ownAlbums });
+    }
   };
   createAlbum = async (req, res) => {
     console.log(req.body);
