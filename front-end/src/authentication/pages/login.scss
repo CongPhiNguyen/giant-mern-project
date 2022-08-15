@@ -7,73 +7,73 @@
 .app-1-container {
   background-color: #f4f4f4;
   width: 100vw;
-  height: calc(100vh - 52px);
-  padding-top: 20px;
+  height: calc(100vh - 5.2em);
+  padding-top: 2em;
   .login-container {
     width: 60%;
-    max-width: 500px;
+    max-width: 50em;
     background-color: #fff;
-    border: 2px double #000;
+    border: 0.2em double #000;
     margin: auto;
-    padding: 20px;
+    padding: 2em;
     .login-title {
       text-align: center;
-      margin-bottom: 32px;
+      margin-bottom: 3.2em;
     }
     .captcha-container {
-      padding: 10px;
+      padding: 1em;
     }
     .captcha-container div {
       margin: auto;
     }
     .input-container {
-      margin: 0px auto 4px;
+      margin: 0em auto 0.4em;
       display: flex;
       justify-content: space-around;
       align-items: center;
-      padding: 10px;
+      padding: 1em;
       .input-title {
         flex: 1;
-        font-size: 16px;
+        font-size: 1.6em;
       }
       .input-box {
         flex: 3;
-        padding: 10px;
-        font-size: 16px;
-        margin-left: 10px;
+        padding: 1em;
+        font-size: 1.6em;
+        margin-left: 1em;
       }
     }
     .error-input {
-      margin-left: 10px;
-      font-size: 14px;
+      margin-left: 1em;
+      font-size: 1.4em;
       color: red;
-      margin-top: -10px;
-      margin-bottom: 10px;
+      margin-top: -1em;
+      margin-bottom: 1em;
     }
     .note-captcha {
       display: block;
-      margin-top: 20px;
+      margin-top: 2em;
       color: rgb(145, 145, 3);
-      font-size: 13px;
+      font-size: 1.3em;
       text-align: center;
     }
     .login-button {
       width: 100%;
-      padding: 10px 20px;
+      padding: 1em 2em;
     }
     .input-concrete {
       display: flex;
       .input-box {
-        padding: 10px;
-        font-size: 16px;
+        padding: 1em;
+        font-size: 1.6em;
       }
       .send-otp-button {
         flex: 1;
-        padding: 10px 20px;
+        padding: 1em 2em;
       }
       .send-otp-button.disable {
         background-color: #fff;
-        border: 1px solid #e3e3e3;
+        border: 0.1em solid #e3e3e3;
         color: #999;
       }
     }

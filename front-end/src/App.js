@@ -12,6 +12,7 @@ import NotFound from "./shared/pages/404";
 import ImageViewing from "./album/pages/ImageViewing";
 import ImageControlling from "./album/pages/ImageControlling";
 import ImagesUploading from "./album/pages/ImagesUploading";
+import AlbumsViewing from "./album/pages/AlbumsViewing";
 
 import {
   BrowserRouter as Router,
@@ -19,6 +20,7 @@ import {
   Routes,
   Navigate,
 } from "react-router-dom";
+import AbstractModal from "./shared/modals/AbstractModal";
 
 const App = () => {
   useEffect(() => {
@@ -40,9 +42,13 @@ const App = () => {
               <Route path="view" element={<ImageViewing />} />
               <Route path="upload" element={<ImagesUploading />} />
             </Route>
+            <Route path="album">
+              <Route path="" element={<AlbumsViewing />} />
+            </Route>
             <Route path="*" element={<Navigate to="404-not-found" replace />} />
           </Route>
         </Routes>
+        <AbstractModal />
       </div>
       <ToastContainer />
     </Router>

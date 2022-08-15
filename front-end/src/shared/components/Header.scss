@@ -24,6 +24,7 @@
     text-decoration: none;
     display: block;
     position: relative;
+
     .profile-nav {
       position: absolute;
       top: calc(100% + 0.1em);
@@ -40,6 +41,17 @@
           background-color: #e4e4e4;
         }
       }
+    }
+  }
+  .avatar-user {
+    width: 3em;
+    height: 3em;
+    border-radius: 100%;
+    border: 1px solid #333;
+    margin-right: 0.2em;
+    object-fit: cover;
+    &:hover {
+      filter: grayscale(0.8);
     }
   }
   .nav:hover {

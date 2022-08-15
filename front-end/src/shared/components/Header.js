@@ -2,10 +2,12 @@ import React, { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
+import axios from "axios";
+
 import { parseJwt } from "../../utilities/jwt";
 import { cookiesUtil } from "../../utilities/cookies";
 import { useDispatch } from "react-redux";
-import { setCurrentUser } from "../sharedSlice";
+import { setCurrentUser, setCurrentUserInformation } from "../sharedSlice";
 
 import "./Header.scss";
 
@@ -15,6 +17,9 @@ function Header() {
   const [isOpenProfileNav, setOpenProfileNav] = useState(false);
 
   const userInfo = useSelector((state) => state.sharedSlice.currentUser);
+  const userConcrete = useSelector(
+    (state) => state.sharedSlice.currentUserInformation
+  );
 
   useEffect(() => {
     const decodeToken = () => {
@@ -39,6 +44,28 @@ function Header() {
     // eslint-disable-next-line
   }, [userInfo.username]);
 
+  useEffect(() => {
+    const getUserConcrete = () => {
+      axios.defaults.withCredentials = true;
+      const config = {
+        headers: {
+          "content-type": "multipart/form-data",
+        },
+      };
+      console.log("fff");
+      const url = "http://localhost:5000/api/user/get-concrete-information";
+      axios
+        .get(url, { params: { token: cookiesUtil.getAccessToken() } }, config)
+        .then((data) => {
+          dispatch(setCurrentUserInformation(data.data.userInfo));
+        })
+        .catch((err) => {
+          console.log("err", err);
+        });
+    };
+    getUserConcrete();
+  }, [userConcrete.username]);
+
   const logOut = () => {
     cookiesUtil.remove("_jwt");
     dispatch(setCurrentUser({}));
@@ -61,20 +88,32 @@ function Header() {
       </div>
       <div className="right-link">
         {userInfo.username ? (
-          <nav
-            className="nav noselect"
-            onClick={() => setOpenProfileNav((prev) => !prev)}
-          >
-            {userInfo.username}
-            {isOpenProfileNav && (
-              <ul className="profile-nav">
-                <li className="profile-nav-item">Profile</li>
-                <li className="profile-nav-item" onClick={logOut}>
-                  Log out
-                </li>
-              </ul>
-            )}
-          </nav>
+          <React.Fragment>
+            <nav
+              className="nav noselect"
+              onClick={() => setOpenProfileNav((prev) => !prev)}
+            >
+              {userInfo.username}
+
+              {isOpenProfileNav && (
+                <ul className="profile-nav">
+                  <li className="profile-nav-item">Profile</li>
+                  <li className="profile-nav-item" onClick={logOut}>
+                    Log out
+                  </li>
+                </ul>
+              )}
+            </nav>
+            <img
+              className="avatar-user"
+              src={
+                userConcrete.avatarURL ||
+                "https://pbs.twimg.com/media/E95rRTAXsAEND8Z.jpg"
+              }
+              onClick={() => setOpenProfileNav((prev) => !prev)}
+              alt="avatar"
+            ></img>
+          </React.Fragment>
         ) : (
           <React.Fragment>
             <NavLink className="nav" to="/sign-in">

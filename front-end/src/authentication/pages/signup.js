@@ -3,7 +3,11 @@ import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "./signup.scss";
 
+import { useNavigate } from "react-router-dom";
+
 export default function SignUp(props) {
+  const navigate = useNavigate();
+
   const [isUsernameExist, setIsUsernameExist] = useState(false);
   const [isEmailExist, setIsEmailExist] = useState(false);
   const [isValidEmail, setIsValidEmail] = useState(true);
@@ -85,12 +89,13 @@ export default function SignUp(props) {
         password: password,
       })
       .then((data) => {
-        console.log("data", data);
-        sendOTP(username, email);
-        setCurrentUsername(username);
-        pageRef.username.current.value = "";
-        setCurrentStep(2);
+        // console.log("data", data);
+        // sendOTP(username, email);
+        // setCurrentUsername(username);
+        // pageRef.username.current.value = "";
+        // setCurrentStep(2);
         // toast("Signup successfully!");
+        navigate("/sign-in");
       })
       .catch((error) => {
         console.log(error);

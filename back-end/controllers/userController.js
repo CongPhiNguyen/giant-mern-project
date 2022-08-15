@@ -2,10 +2,20 @@ const user = require("../models/user");
 const crypto = require("crypto");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const fs = require("fs");
+const path = require("path");
+const { v4: uuidv4 } = require("uuid");
 
 const SALT_ROUND = 10;
 const JWT_SECRET = "congphi";
 const otpController = require("./otpController");
+
+const parseJwt = require("../utilities/JWT");
+
+const createUserFolder = (username) => {
+  const filePath = __dirname + "/../privates/" + username;
+  fs.promises.mkdir(filePath, { recursive: true });
+};
 
 // TODO: verified user when sign up
 class userController {
@@ -138,17 +148,20 @@ class userController {
     console.log("req.body", req.body);
     const salt = crypto.randomBytes(20).toString("hex");
     const hashPass = bcrypt.hashSync(req.body.password + salt, SALT_ROUND);
+    const userRoot = uuidv4();
     try {
       const newUser = new user({
         email: req.body.email,
         password: hashPass,
         username: req.body.username,
         salt: salt,
+        userRoot: userRoot,
       });
       newUser
         .save()
         .then((data) => {
           console.log("data", data);
+          createUserFolder(userRoot);
           res.status(200).send({
             error: false,
             success: true,
@@ -194,6 +207,23 @@ class userController {
         console.log(error);
         res.status(400).send({ run: false });
       });
+  };
+
+  getConcreteUserInfo = async (req, res) => {
+    console.log(req.query);
+    const token = req.query.token;
+    try {
+      let jwtInfo = parseJwt(token);
+      console.log("jwtInfo", jwtInfo);
+      const userInfo = await user.findOne({ username: jwtInfo.username });
+      if (userInfo === null) {
+        res.status(201).send({ find: false });
+      }
+      res.status(200).send({ find: true, userInfo: userInfo });
+    } catch (e) {
+      console.log(e);
+      res.status(400).send({ error: "Unauthorize token", find: false });
+    }
   };
 }
 
