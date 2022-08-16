@@ -9,5 +9,6 @@ router.post("/check-login-info", userController.checkLoginInfo);
 router.post("/sign-up", userController.signUp);
 router.post("/verify-user", userController.verifyUser);
 router.get("/get-concrete-information", userController.getConcreteUserInfo);
+router.get("/:id", userController.getUserByID);
 
 module.exports = router;

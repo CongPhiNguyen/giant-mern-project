@@ -8,30 +8,19 @@ const album = require("../models/album");
 
 class albumController {
   getAllUserAlbum = async (req, res) => {
-    const schemas = [];
-    // mongoose.modelNames().forEach(function (modelName) {
-    //   schemas.push(mongoose.model(modelName).schema.path());
-    // });
-
-    // mongoose.model('albums').schema.path()
-    // console.log("schemas", schemas);
-    // console.log(mongoose.modelNames());
-    // console.log(mongoose.model("users").schema);
-
-    // console.log(req.query);
     const userInfo = await user
       .findOne({ username: req.query.username })
       .populate({ path: "ownAlbums", options: { strictPopulate: false } });
-    console.log("userInfo", userInfo);
     if (userInfo === null) {
       res.status(200).send({ run: false });
     } else {
       res.status(200).send({ run: true, albumList: userInfo.ownAlbums });
     }
   };
+
   createAlbum = async (req, res) => {
     console.log(req.body);
-    const userInfo = await user.findOne({ username: req.body.username });
+    const userInfo = await user.findById(req.body.userID);
     if (!userInfo) {
       res.status(200).send({ error: "User not found" });
       return;
@@ -47,7 +36,7 @@ class albumController {
         albumRoot: folderRoot,
         albumName: req.body.albumTitle,
         description: req.body.description,
-        ownPeople: req.body.username,
+        ownPeople: userInfo._id,
       });
 
       newAlbum

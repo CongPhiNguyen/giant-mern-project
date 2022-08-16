@@ -1,8 +1,8 @@
 import React from "react";
 import "./ImageControlling.scss";
 
-import ImageController from "../components/ImageController";
-import AlbumController from "../components/AlbumController";
+import ImageController from "../../components/Image/ImageController";
+import AlbumController from "../../components/Album/AlbumController";
 
 export default function ViewImage() {
   return (

@@ -46,17 +46,15 @@ function Header() {
 
   useEffect(() => {
     const getUserConcrete = () => {
-      axios.defaults.withCredentials = true;
-      const config = {
-        headers: {
-          "content-type": "multipart/form-data",
-        },
-      };
-      console.log("fff");
       const url = "http://localhost:5000/api/user/get-concrete-information";
       axios
-        .get(url, { params: { token: cookiesUtil.getAccessToken() } }, config)
+        .get(
+          url,
+          { params: { token: cookiesUtil.getAccessToken() } },
+          { withCrendential: true }
+        )
         .then((data) => {
+          console.log("dataUser", data);
           dispatch(setCurrentUserInformation(data.data.userInfo));
         })
         .catch((err) => {
@@ -64,7 +62,7 @@ function Header() {
         });
     };
     getUserConcrete();
-  }, [userConcrete.username]);
+  }, [userInfo.username]);
 
   const logOut = () => {
     cookiesUtil.remove("_jwt");
@@ -107,7 +105,7 @@ function Header() {
             <img
               className="avatar-user"
               src={
-                userConcrete.avatarURL ||
+                userConcrete?.avatarURL ||
                 "https://pbs.twimg.com/media/E95rRTAXsAEND8Z.jpg"
               }
               onClick={() => setOpenProfileNav((prev) => !prev)}

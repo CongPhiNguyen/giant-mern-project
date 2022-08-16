@@ -1,0 +1,135 @@
+.uploading-box-container {
+  border: 1px solid #333;
+  padding: 1.2em;
+  .heading {
+    padding: 1em 0em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .more-icon {
+      padding: 0.8em 0.8em;
+      margin-left: -0.8em;
+      height: 100%;
+      border-radius: 50%;
+      &:hover {
+        background-color: #e4e4e4;
+      }
+    }
+    .album-selection-container {
+      .album-selection {
+        padding: 0.6em;
+      }
+      .select-button {
+        padding: 0.6em 1.2em;
+      }
+    }
+  }
+  .main-content {
+    border: 1px solid #333;
+    height: 40em;
+    display: flex;
+    gap: 2em;
+    padding: 2em;
+    .img-upload-container {
+      border: 1px dashed #333;
+      width: 50%;
+      padding: 1em;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1em;
+      overflow-y: auto;
+      justify-content: center;
+      align-content: flex-start;
+      .img-file-to-upload {
+        width: 8em;
+        height: 8em;
+        object-fit: cover;
+        border: 1px dashed #333;
+        &.selected {
+          border: 2px solid magenta;
+        }
+      }
+      .img-picker {
+        width: 8em;
+        height: 8em;
+        border: 1px dashed #333;
+        .img-add {
+          width: 100%;
+          height: 100%;
+          padding: 1em;
+        }
+        &:hover {
+          filter: grayscale(0.9);
+        }
+      }
+    }
+    .img-upload-infor {
+      width: 50%;
+      height: 100%;
+      .input-area {
+        .img-manage {
+          font-size: 1.2em;
+          display: flex;
+          justify-content: space-between;
+          .img-index {
+          }
+          .delete-icon {
+            &:hover {
+              color: red;
+              cursor: pointer;
+            }
+          }
+        }
+
+        .title {
+          padding: 0.4em 0;
+          border: none;
+          border-bottom: 1px solid #333;
+          font-size: 1.6em;
+          &:focus {
+            outline: none;
+          }
+        }
+        .user-info {
+          margin-top: 1em;
+          display: flex;
+          align-items: center;
+          .user-avatar {
+            width: 4em;
+            height: 4em;
+            border-radius: 100%;
+            margin-right: 1.2em;
+          }
+          .user-name {
+            font-size: 1.4em;
+          }
+        }
+        .image-description {
+          margin-top: 1em;
+          font-family: Arial, Helvetica, sans-serif;
+          resize: none;
+          width: 100%;
+          outline: none;
+          padding: 0.4em;
+        }
+
+        .alt-text {
+          font-size: 1.2em;
+          padding: 0.4em 0.6em;
+          outline: none;
+        }
+      }
+      .img-attribute {
+        margin-top: 2em;
+        margin-bottom: 4em;
+        .title {
+          font-size: 1.4em;
+        }
+      }
+      .img-uploader {
+        padding: 0.4em 0.6em;
+        font-size: 1.4em;
+      }
+    }
+  }
+}

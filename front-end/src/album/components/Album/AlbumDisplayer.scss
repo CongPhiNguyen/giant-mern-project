@@ -1,5 +1,14 @@
 .displayer-container {
   padding: 1em;
+  border: 1px dashed #fff;
+  &.selected {
+    border: 1px dashed #333;
+    background-color: #e4e4e4;
+  }
+  &:hover {
+    background-color: #f1f1f1;
+    cursor: pointer;
+  }
   .image-symbols {
     display: flex;
     .image-left {

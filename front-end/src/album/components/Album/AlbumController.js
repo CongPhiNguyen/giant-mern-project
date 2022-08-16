@@ -1,9 +1,9 @@
 import React from "react";
 import "./AlbumController.scss";
-import { NavLink } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import { useDispatch } from "react-redux/es/hooks/useDispatch";
-import { showModal } from "../../shared/modals/ModalSlice";
+import { showModal } from "../../../shared/modals/ModalSlice";
 
 export default function AlbumController() {
   const dispatch = useDispatch();
@@ -18,7 +18,7 @@ export default function AlbumController() {
           Add new album
         </li>
         <li className="feature-selection">
-          <NavLink to="/album/">View all albums</NavLink>
+          <Link to="/album/">View all own albums</Link>
         </li>
       </ul>
     </div>

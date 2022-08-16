@@ -11,7 +11,7 @@ const albumSchema = new Schema(
     haveAlbums: [{ type: mongoose.Schema.Types.ObjectId, ref: "albums" }],
     haveImages: [{ type: mongoose.Schema.Types.ObjectId, ref: "images" }],
     description: { type: "string" },
-    ownPeople: { type: "string" },
+    ownPeople: { type: mongoose.Schema.Types.ObjectId, ref: "albums" },
     storage: { type: "number", default: 0 },
     sharedPeople: [{ type: mongoose.Schema.Types.ObjectId, ref: "users" }],
     viewedPeople: [{ type: mongoose.Schema.Types.ObjectId, ref: "users" }],

@@ -9,10 +9,11 @@ import Header from "./shared/components/Header";
 import Login from "./authentication/pages/login";
 import SignUp from "./authentication/pages/signup";
 import NotFound from "./shared/pages/404";
-import ImageViewing from "./album/pages/ImageViewing";
-import ImageControlling from "./album/pages/ImageControlling";
-import ImagesUploading from "./album/pages/ImagesUploading";
-import AlbumsViewing from "./album/pages/AlbumsViewing";
+import ImageViewing from "./album/pages/Image/ImageViewing";
+import ImageControlling from "./album/pages/Image/ImageControlling";
+import ImagesUploading from "./album/pages/Image/ImagesUploading";
+import AlbumsViewing from "./album/pages/Album/AlbumsViewing";
+import ImagesViewing from "./album/pages/Image/ImagesViewing";
 
 import {
   BrowserRouter as Router,
@@ -41,6 +42,7 @@ const App = () => {
               <Route path="" element={<ImageControlling />} />
               <Route path="view" element={<ImageViewing />} />
               <Route path="upload" element={<ImagesUploading />} />
+              <Route path="view-all-image" element={<ImagesViewing />} />
             </Route>
             <Route path="album">
               <Route path="" element={<AlbumsViewing />} />

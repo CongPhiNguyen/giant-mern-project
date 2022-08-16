@@ -1,6 +1,6 @@
 import React from "react";
 import "./AbstractModal.scss";
-import { showModal, hideModal } from "./ModalSlice";
+import { hideModal } from "./ModalSlice";
 import { useDispatch } from "react-redux/es/exports";
 import { useSelector } from "react-redux";
 import { CSSTransition } from "react-transition-group";
@@ -17,13 +17,11 @@ export default function AbstractModal() {
   };
 
   const chooseModal = (modalName) => {
-    {
-      switch (modalName) {
-        case "Add new album":
-          return <AddNewAlbum></AddNewAlbum>;
-        default:
-          return null;
-      }
+    switch (modalName) {
+      case "Add new album":
+        return <AddNewAlbum></AddNewAlbum>;
+      default:
+        return null;
     }
   };
   return (

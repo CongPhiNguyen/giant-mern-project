@@ -1,10 +1,14 @@
 import React, { useRef } from "react";
 import { useSelector } from "react-redux/es/exports";
-
+import { useDispatch } from "react-redux/es/exports";
 import "./AddNewAlbum.scss";
+import { toast } from "react-toastify";
 import axios from "axios";
 
+import { hideModal } from "./ModalSlice";
+
 export default function AddNewAlbum() {
+  const dispatch = useDispatch();
   const userInfo = useSelector(
     (state) => state.sharedSlice.currentUserInformation
   );
@@ -13,7 +17,7 @@ export default function AddNewAlbum() {
     const dataAdd = {
       albumTitle: addAlbumRef.name.current.value,
       description: addAlbumRef.description.current.value,
-      username: userInfo.username,
+      userID: userInfo._id,
     };
     axios
       .post("http://localhost:5000/api/album/create-album", dataAdd, {
@@ -21,6 +25,8 @@ export default function AddNewAlbum() {
       })
       .then((data) => {
         console.log(data);
+        dispatch(hideModal());
+        toast(`Album ${addAlbumRef.name.current.value} was created`);
       })
       .catch((err) => console.log(err));
   };
@@ -32,6 +38,9 @@ export default function AddNewAlbum() {
 
   return (
     <div className="modal-concrete-container">
+      <p className="close-btn" onClick={() => dispatch(hideModal())}>
+        X
+      </p>
       <div className="modal-heading">Add New Album</div>
       <div className="divider"></div>
       <div className="modal-content">

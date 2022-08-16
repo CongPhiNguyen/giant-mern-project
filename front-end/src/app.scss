@@ -13,12 +13,14 @@
   margin-top: 5.3em;
   min-height: calc(100vh - 5.3em);
   position: relative;
+  overflow-x: hidden;
   .page-container {
     max-width: 120em;
     width: 80%;
     margin: 0em auto;
     padding-top: 3em;
     position: relative;
+    overflow-x: hidden;
     .content-container {
       background-color: #fff;
       margin: auto;
@@ -40,4 +42,8 @@
   -ms-user-select: none; /* Internet Explorer/Edge */
   user-select: none; /* Non-prefixed version, currently
                                   supported by Chrome, Edge, Opera and Firefox */
+}
+
+.hidden {
+  display: none;
 }

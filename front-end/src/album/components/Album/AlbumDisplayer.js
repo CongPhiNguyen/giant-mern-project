@@ -2,9 +2,9 @@ import React from "react";
 import "./AlbumDisplayer.scss";
 
 export default function AlbumDisplayer(props) {
-  console.log(props);
+  // console.log(props);
   return (
-    <div className="displayer-container">
+    <div className={`displayer-container ${props.selected ? "selected" : ""}`}>
       <div className="image-symbols">
         <img
           className="image-left"
@@ -22,7 +22,6 @@ export default function AlbumDisplayer(props) {
         </div>
       </div>
       <p className="name-tag">{props.album.albumName}</p>
-      {/* <p>{JSON.stringify(props)}</p> */}
     </div>
   );
 }

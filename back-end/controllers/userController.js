@@ -34,6 +34,22 @@ class userController {
       });
   };
 
+  getUserByID = async (req, res) => {
+    // console.log("req", req);
+    // res.status(200).send({ run: true });
+    // console.log(req.params.id);
+    await user
+      .findOne({ _id: req.params.id })
+      .exec()
+      .then((data) => {
+        res.status(200).send({ data: data });
+      })
+      .catch((error) => {
+        console.log(error.message);
+        res.status(200).send(JSON.stringify({ error: error.message }));
+      });
+  };
+
   hasUsername = async (req, res) => {
     console.log("req.body", req.body);
     let dataUser;

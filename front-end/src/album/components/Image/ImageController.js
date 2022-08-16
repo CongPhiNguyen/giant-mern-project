@@ -22,6 +22,14 @@ export default function ImageController() {
       >
         View image
       </p>
+      <p
+        className="feature-selection"
+        onClick={() => {
+          navigate("/image/view-all-image");
+        }}
+      >
+        View all own image
+      </p>
     </div>
   );
 }

@@ -1,8 +1,8 @@
 import React from "react";
 import "./ImagesUploading.scss";
 
-import UploadingBox from "../components/UploadingBox";
-import UploadBoxController from "../components/UploadBoxController";
+import UploadingBox from "../../components/Image/UploadingBox";
+import UploadBoxController from "../../components/Image/UploadBoxController";
 
 export default function ImageUploading() {
   return (
@@ -14,9 +14,9 @@ export default function ImageUploading() {
           </section>
         </div>
       </div>
-      <section className="uploading-box-controller">
+      {/* <section className="uploading-box-controller">
         <UploadBoxController />
-      </section>
+      </section> */}
     </React.Fragment>
   );
 }
