@@ -1,0 +1,15 @@
+.image-display-container {
+  border: 2px solid white;
+  padding: 1em;
+  &.selected {
+    border: 2px dashed pink;
+  }
+  .image-container {
+    .image-concrete {
+      width: 10em;
+      height: 10em;
+      object-fit: cover;
+      border: 1px solid #333;
+    }
+  }
+}

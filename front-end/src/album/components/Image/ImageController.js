@@ -17,14 +17,6 @@ export default function ImageController() {
       <p
         className="feature-selection"
         onClick={() => {
-          navigate("/image/view");
-        }}
-      >
-        View image
-      </p>
-      <p
-        className="feature-selection"
-        onClick={() => {
           navigate("/image/view-all-image");
         }}
       >

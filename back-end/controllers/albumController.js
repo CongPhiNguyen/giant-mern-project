@@ -8,6 +8,7 @@ const album = require("../models/album");
 
 class albumController {
   getAllUserAlbum = async (req, res) => {
+    console.log("get user album");
     const userInfo = await user
       .findOne({ username: req.query.username })
       .populate({ path: "ownAlbums", options: { strictPopulate: false } });
@@ -19,7 +20,7 @@ class albumController {
   };
 
   createAlbum = async (req, res) => {
-    console.log(req.body);
+    // console.log(req.body);
     const userInfo = await user.findById(req.body.userID);
     if (!userInfo) {
       res.status(200).send({ error: "User not found" });

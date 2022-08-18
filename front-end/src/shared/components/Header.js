@@ -67,6 +67,7 @@ function Header() {
   const logOut = () => {
     cookiesUtil.remove("_jwt");
     dispatch(setCurrentUser({}));
+    dispatch(setCurrentUserInformation({}));
     navigate("/sign-in");
   };
 

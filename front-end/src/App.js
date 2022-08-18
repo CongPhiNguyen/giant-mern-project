@@ -22,6 +22,7 @@ import {
   Navigate,
 } from "react-router-dom";
 import AbstractModal from "./shared/modals/AbstractModal";
+import SimpleImageViewing from "./album/pages/Image/SimpleImageViewing";
 
 const App = () => {
   useEffect(() => {
@@ -40,14 +41,18 @@ const App = () => {
             <Route path="404-not-found" element={<NotFound />} />
             <Route path="image">
               <Route path="" element={<ImageControlling />} />
-              <Route path="view" element={<ImageViewing />} />
+              <Route path="view/:userID/:imgID" element={<ImageViewing />} />
+              <Route
+                path="simple-view/:userID/:imgID"
+                element={<SimpleImageViewing />}
+              />
               <Route path="upload" element={<ImagesUploading />} />
               <Route path="view-all-image" element={<ImagesViewing />} />
             </Route>
             <Route path="album">
               <Route path="" element={<AlbumsViewing />} />
             </Route>
-            <Route path="*" element={<Navigate to="404-not-found" replace />} />
+            {/* <Route path="*" element={<Navigate to="404-not-found" replace />} /> */}
           </Route>
         </Routes>
         <AbstractModal />

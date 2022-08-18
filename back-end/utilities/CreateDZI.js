@@ -13,7 +13,7 @@ const createDZIFromBuffer = (buffer, path, fileName) => {
     .then((info) => {
       console.log(info);
       try {
-        extract(path + fileName + ".zip", { dir: path + fileName })
+        extract(path + fileName + ".zip", { dir: path })
           .then(() => {
             console.log("Extraction complete");
             fs.unlink(path + fileName + ".zip", (err) => {

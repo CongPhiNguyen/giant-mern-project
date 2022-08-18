@@ -226,13 +226,13 @@ class userController {
   };
 
   getConcreteUserInfo = async (req, res) => {
-    console.log(req.query);
+    // console.log(req.query);
     const token = req.query.token;
     try {
       let jwtInfo = parseJwt(token);
-      console.log("jwtInfo", jwtInfo);
+      // console.log("jwtInfo", jwtInfo);
       const userInfo = await user.findOne({ username: jwtInfo.username });
-      if (userInfo === null) {
+      if (userInfo === null || userInfo === {}) {
         res.status(201).send({ find: false });
       }
       res.status(200).send({ find: true, userInfo: userInfo });

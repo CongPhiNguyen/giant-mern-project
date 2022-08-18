@@ -31,10 +31,7 @@ const userSchema = new Schema(
       type: Date,
       default: Date.now(),
     },
-    ownImages: {
-      type: Array,
-      default: [],
-    },
+    ownImages: [{ type: mongoose.Schema.Types.ObjectId, ref: "images" }],
     receivedImages: {
       type: Array,
       default: [],

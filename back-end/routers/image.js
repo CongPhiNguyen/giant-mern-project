@@ -25,6 +25,8 @@ router.post(
   imageControler.uploadImages
 );
 
-router.get("/:id", imageControler.displayImage);
+router.get("/get-all-own-images", imageControler.getAllOwnImage);
+// router.get("/dzi/:user-root/:image-root", imageControler.displayImage);
+router.get("/:user-root/:image-root", imageControler.displayImage);
 
 module.exports = router;

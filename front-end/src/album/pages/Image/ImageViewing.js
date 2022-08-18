@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import OpenSeadragon from "openseadragon";
+import { useParams } from "react-router-dom";
 
 import "./ImageViewing.scss";
 
 export default function ImageViewing() {
+  const params = useParams();
   const [viewer1, setViewer1] = useState();
   useEffect(() => {
     setViewer1(
@@ -13,13 +15,13 @@ export default function ImageViewing() {
         tileSources: {
           Image: {
             xmlns: "https://schemas.microsoft.com/deepzoom/2008",
-            Url: "http://localhost:5000/privates/output-ZGDZQ1/output_files/",
+            Url: `http://localhost:5000/images/dzi/${params.userID}/${params.imgID}/`,
             Format: "png",
             Overlap: "0",
-            TileSize: "64",
+            TileSize: "256",
             Size: {
-              Width: `${564 * 4}`,
-              Height: `${705 * 4}`,
+              Width: `${15600}`,
+              Height: `${11400}`,
             },
           },
         },
@@ -29,7 +31,7 @@ export default function ImageViewing() {
       })
     );
   }, []);
-
+  console.log(params);
   return (
     <div>
       <div id="slide1" style={{ width: "100%", height: "80vh" }}></div>

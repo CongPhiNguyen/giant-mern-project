@@ -1,0 +1,27 @@
+.image-group-container {
+  padding: 1em;
+  position: relative;
+  width: 14em;
+  height: 10em;
+  .image-standing {
+    width: 10em;
+    height: 10em;
+    object-fit: cover;
+    border-radius: 2em;
+    border: #fff solid 0.2em;
+    padding: -1em;
+    position: absolute;
+  }
+  .top {
+    z-index: 4;
+    left: 0em;
+  }
+  .middle {
+    z-index: 3;
+    left: 2em;
+  }
+  .bottom {
+    z-index: 2;
+    left: 4em;
+  }
+}

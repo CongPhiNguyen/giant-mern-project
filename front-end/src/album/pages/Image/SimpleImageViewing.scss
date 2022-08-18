@@ -1,0 +1,18 @@
+.component-container {
+  .img-wrapper {
+    border: 1px solid #333;
+    width: calc(100% - 8em);
+    height: 60vh;
+    margin: 4em;
+    overflow: hidden;
+    .img-concrete {
+      width: 120em;
+      transform-origin: 0% 0%;
+    }
+  }
+  .display-container {
+    .display-controller {
+      padding: 1em;
+    }
+  }
+}
