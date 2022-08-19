@@ -6,6 +6,9 @@ import { BsThreeDots } from "react-icons/bs";
 import axios from "axios";
 import { toast } from "react-toastify";
 
+import UploadingProgress from "./UploadingProgress";
+import { Line } from "rc-progress";
+
 export default function UploadingBox() {
   const [listImage, setListImage] = useState([]);
   const [listImageData, setListImageData] = useState([]);
@@ -16,6 +19,10 @@ export default function UploadingBox() {
   const [listImageWH, setListImageWH] = useState([]);
   const [percentUpload, setPercentUpload] = useState(0);
 
+  const [serverProcessing, setServerProcessing] = useState([]);
+  const [processID, setProcessID] = useState("");
+
+  let checkingProcessInterval;
   const userInfo = useSelector(
     (state) => state.sharedSlice.currentUserInformation
   );
@@ -127,12 +134,37 @@ export default function UploadingBox() {
       .post(url, uploadImagesData, config)
       .then((data) => {
         console.log("data", data);
+        setProcessID(data.data.currentUploadProcess.id);
+        // callCheckProgress(data.data.currentUploadProcess.id);
+
+        checkingProcessInterval = setInterval(() => {
+          callCheckProgress(data.data.currentUploadProcess.id);
+        }, 1000);
       })
       .catch((err) => {
         console.log("err", err);
       });
   };
 
+  const callCheckProgress = (processID) => {
+    axios
+      .get(
+        "http://localhost:5000/api/image/check-progress-upload",
+        { params: { processID: processID } },
+        { withCredentials: true }
+      )
+      .then((data) => {
+        // console.log("data.data.currentProcess", data.data.currentProcess.img);
+        if (
+          data.data.currentProcess.img.every((value) => value != "uploaded")
+        ) {
+          clearInterval(checkingProcessInterval);
+        }
+      })
+      .catch((err) => {
+        console.log("err", err);
+      });
+  };
   const deleteCurrentImageFromQueue = (removeIndex) => {
     //TODO: Xóa các image ra khỏi input file
     setListImageData((prev) =>
@@ -156,173 +188,188 @@ export default function UploadingBox() {
 
   let imgInputRef = [];
 
+  console.log("listImage", listImage);
   console.log("listImageWH", listImageWH);
+
   return (
-    <div className="uploading-box-container">
-      <div className="percent-upload">{percentUpload}</div>
-      <div className="heading">
-        <p className="more-icon">
-          <BsThreeDots />
-        </p>
-        <div className="album-selection-container">
-          <select
-            className="album-selection"
-            name="album-selection"
-            id="album-upload-selection"
-          >
-            <option value={"none"}>...</option>
-            {albumsInfo.map((value, index) => (
-              <option value={value._id} key={index}>
-                {value.albumName}
-              </option>
-            ))}
-          </select>
-          <button className="select-button">Select</button>
+    <React.Fragment>
+      {listImage?.length > 0 && (
+        <UploadingProgress
+          listImage={listImage}
+          listImageData={listImageData}
+          serverProcessing={serverProcessing}
+        />
+      )}
+      <div className="uploading-box-container">
+        <div className="percent-upload">
+          {" "}
+          <Line percent={percentUpload} strokeWidth={1} strokeColor="cyan" />
         </div>
-      </div>
-      <div className="main-content">
-        <div className="img-upload-container">
-          {listImage.map((value, index) => {
-            return (
+        <div className="heading">
+          <p className="more-icon">
+            <BsThreeDots />
+          </p>
+          <div className="album-selection-container">
+            <select
+              className="album-selection"
+              name="album-selection"
+              id="album-upload-selection"
+            >
+              <option value={"none"}>...</option>
+              {albumsInfo.map((value, index) => (
+                <option value={value._id} key={index}>
+                  {value.albumName}
+                </option>
+              ))}
+            </select>
+            <button className="select-button">Select</button>
+          </div>
+        </div>
+        <div className="main-content">
+          <div className="img-upload-container">
+            {listImage.map((value, index) => {
+              return (
+                <img
+                  src={
+                    listImageData[index]
+                      ? listImageData[index]
+                      : "https://upload.wikimedia.org/wikipedia/commons/b/b1/Loading_icon.gif"
+                  }
+                  key={index}
+                  alt=""
+                  id={`image-upload-${index}`}
+                  className={`img-file-to-upload ${
+                    index === currentSelectedImageIndex ? "selected" : ""
+                  }`}
+                  onLoad={(e) => {
+                    // console.log("e.target.src", e.target.src);
+                    if (
+                      e.target.src ===
+                      "https://upload.wikimedia.org/wikipedia/commons/b/b1/Loading_icon.gif"
+                    )
+                      return;
+                    if (listImage.length <= listImageWH.length) return;
+                    setListImageWH((prev) => [
+                      ...prev,
+                      {
+                        width: e.target.naturalWidth,
+                        height: e.target.naturalHeight,
+                      },
+                    ]);
+                  }}
+                  onClick={() => {
+                    setCurrentSelectedImageIndex(index);
+                  }}
+                />
+              );
+            })}
+            <label className="img-picker" htmlFor="img-input">
               <img
-                src={
-                  listImageData[index]
-                    ? listImageData[index]
-                    : "https://upload.wikimedia.org/wikipedia/commons/b/b1/Loading_icon.gif"
-                }
-                key={index}
+                className="img-add"
+                src="https://cdn-icons-png.flaticon.com/512/1091/1091585.png"
                 alt=""
-                id={`image-upload-${index}`}
-                className={`img-file-to-upload ${
-                  index === currentSelectedImageIndex ? "selected" : ""
-                }`}
-                onLoad={(e) => {
-                  // console.log("e.target.src", e.target.src);
-                  if (
-                    e.target.src ===
-                    "https://upload.wikimedia.org/wikipedia/commons/b/b1/Loading_icon.gif"
-                  )
-                    return;
-                  if (listImage.length <= listImageWH.length) return;
-                  setListImageWH((prev) => [
-                    ...prev,
-                    {
-                      width: e.target.naturalWidth,
-                      height: e.target.naturalHeight,
-                    },
-                  ]);
-                }}
-                onClick={() => {
-                  setCurrentSelectedImageIndex(index);
-                }}
               />
-            );
-          })}
-          <label className="img-picker" htmlFor="img-input">
-            <img
-              className="img-add"
-              src="https://cdn-icons-png.flaticon.com/512/1091/1091585.png"
-              alt=""
-            />
-          </label>
-          <input
-            type="file"
-            id="img-input"
-            style={{ display: "none" }}
-            onChange={(e) => {
-              getListImage(e);
-            }}
-            multiple="multiple"
-            accept="image/gif, image/jpeg, image/png"
-          ></input>
-        </div>
-        <div className="img-upload-infor">
-          {listImageSaveData.map((imgData, index) => {
-            return (
-              <div
-                className={`${
-                  currentSelectedImageIndex === index ? "block" : "hidden"
-                }`}
-              >
-                <section className="input-area">
-                  {currentSelectedImageIndex !== -1 && listImage.length !== 0 && (
-                    <div className="img-manage">
-                      <p className="img-index">{`${
-                        currentSelectedImageIndex + 1
-                      }/${listImage.length}`}</p>
-                      <p
-                        className="delete-icon noselect"
-                        onClick={() => {
-                          deleteCurrentImageFromQueue(
-                            currentSelectedImageIndex
-                          );
-                        }}
-                      >
-                        Delete
-                      </p>
-                    </div>
-                  )}
-
-                  <input
-                    type="text"
-                    className="title"
-                    placeholder="Nhập tiêu đề"
-                    ref={imgInputRef[index]?.titleRef}
-                  />
-                  <div className="user-info">
-                    <img
-                      src={userInfo?.avatarURL}
-                      alt=""
-                      className="user-avatar"
-                    />
-                    <p className="user-name">{userInfo?.username} </p>
-                  </div>
-                  <textarea
-                    className="image-description"
-                    rows="2"
-                    placeholder="Nhập mô tả"
-                    ref={imgInputRef[index]?.descriptionRef}
-                  ></textarea>
-                  <input
-                    type="text"
-                    className="alt-text"
-                    placeholder="Nhập văn bản thay thế"
-                    ref={imgInputRef[index]?.altRef}
-                  />
-                </section>
-                <div className="img-attribute">
-                  <p className="title">Thông tin file</p>
-                  <p className="file-info-concrete">
-                    Size:{" "}
+            </label>
+            <input
+              type="file"
+              id="img-input"
+              style={{ display: "none" }}
+              onChange={(e) => {
+                getListImage(e);
+              }}
+              multiple="multiple"
+              accept="image/gif, image/jpeg, image/png"
+            ></input>
+          </div>
+          <div className="img-upload-infor">
+            {listImageSaveData.map((imgData, index) => {
+              return (
+                <div
+                  className={`${
+                    currentSelectedImageIndex === index ? "block" : "hidden"
+                  }`}
+                >
+                  <section className="input-area">
                     {currentSelectedImageIndex !== -1 &&
-                      convertToComputerSize(
-                        listImage[currentSelectedImageIndex]?.size
+                      listImage.length !== 0 && (
+                        <div className="img-manage">
+                          <p className="img-index">{`${
+                            currentSelectedImageIndex + 1
+                          }/${listImage.length}`}</p>
+                          <p
+                            className="delete-icon noselect"
+                            onClick={() => {
+                              deleteCurrentImageFromQueue(
+                                currentSelectedImageIndex
+                              );
+                            }}
+                          >
+                            Delete
+                          </p>
+                        </div>
                       )}
-                    {listImageWH[currentSelectedImageIndex] &&
-                      ` (${listImageWH[currentSelectedImageIndex].width}x${listImageWH[currentSelectedImageIndex].height})`}
-                  </p>
-                  <p className="file-info-concrete">
-                    Last change:{" "}
-                    {currentSelectedImageIndex !== -1 &&
-                      listImage[
-                        currentSelectedImageIndex
-                      ]?.lastModifiedDate.toString()}
-                  </p>
-                </div>
-              </div>
-            );
-          })}
 
-          <button
-            className="img-uploader"
-            onClick={() => {
-              uploadListImageHandle();
-            }}
-          >
-            Upload
-          </button>
+                    <input
+                      type="text"
+                      className="title"
+                      placeholder="Nhập tiêu đề"
+                      ref={imgInputRef[index]?.titleRef}
+                    />
+                    <div className="user-info">
+                      <img
+                        src={userInfo?.avatarURL}
+                        alt=""
+                        className="user-avatar"
+                      />
+                      <p className="user-name">{userInfo?.username} </p>
+                    </div>
+                    <textarea
+                      className="image-description"
+                      rows="2"
+                      placeholder="Nhập mô tả"
+                      ref={imgInputRef[index]?.descriptionRef}
+                    ></textarea>
+                    <input
+                      type="text"
+                      className="alt-text"
+                      placeholder="Nhập văn bản thay thế"
+                      ref={imgInputRef[index]?.altRef}
+                    />
+                  </section>
+                  <div className="img-attribute">
+                    <p className="title">Thông tin file</p>
+                    <p className="file-info-concrete">
+                      Size:{" "}
+                      {currentSelectedImageIndex !== -1 &&
+                        convertToComputerSize(
+                          listImage[currentSelectedImageIndex]?.size
+                        )}
+                      {listImageWH[currentSelectedImageIndex] &&
+                        ` (${listImageWH[currentSelectedImageIndex].width}x${listImageWH[currentSelectedImageIndex].height})`}
+                    </p>
+                    <p className="file-info-concrete">
+                      Last change:{" "}
+                      {currentSelectedImageIndex !== -1 &&
+                        listImage[
+                          currentSelectedImageIndex
+                        ]?.lastModifiedDate.toString()}
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
+
+            <button
+              className="img-uploader"
+              onClick={() => {
+                uploadListImageHandle();
+              }}
+            >
+              Upload
+            </button>
+          </div>
         </div>
       </div>
-    </div>
+    </React.Fragment>
   );
 }

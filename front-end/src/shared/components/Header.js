@@ -55,7 +55,11 @@ function Header() {
         )
         .then((data) => {
           console.log("dataUser", data);
-          dispatch(setCurrentUserInformation(data.data.userInfo));
+          if (data.data.userInfo)
+            dispatch(setCurrentUserInformation(data.data.userInfo));
+          else {
+            dispatch(setCurrentUserInformation({}));
+          }
         })
         .catch((err) => {
           console.log("err", err);
@@ -68,12 +72,18 @@ function Header() {
     cookiesUtil.remove("_jwt");
     dispatch(setCurrentUser({}));
     dispatch(setCurrentUserInformation({}));
+    window.location.reload();
     navigate("/sign-in");
   };
 
   return (
     <header className="app-navigation">
       <div className="left-link">
+        <img
+          src="https://itviec.com/rails/active_storage/representations/proxy/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBeHlyRXc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--29ee6adc091053a4f05829cbd2b72b216cc8ada4/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdCem9MWm05eWJXRjBTU0lJY0c1bkJqb0dSVlE2RkhKbGMybDZaVjkwYjE5c2FXMXBkRnNIYVFJc0FXa0NMQUU9IiwiZXhwIjpudWxsLCJwdXIiOiJ2YXJpYXRpb24ifX0=--ee4e4854f68df0a745312d63f6c2782b5da346cd/Taptap_mainlogo-03.png"
+          alt=""
+          className="logo"
+        />
         {userInfo.username && (
           <React.Fragment>
             <NavLink className="nav" to="/home">
@@ -97,6 +107,7 @@ function Header() {
               {isOpenProfileNav && (
                 <ul className="profile-nav">
                   <li className="profile-nav-item">Profile</li>
+                  <div className="hor-divider"></div>
                   <li className="profile-nav-item" onClick={logOut}>
                     Log out
                   </li>

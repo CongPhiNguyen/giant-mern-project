@@ -1,6 +1,5 @@
 .app-navigation {
   display: flex;
-  border: 0.1em solid #333;
   border-left: none;
   border-right: none;
   justify-content: space-between;
@@ -11,6 +10,10 @@
   left: 0;
   z-index: 100;
   background-color: #fff;
+  .logo {
+    height: 2em;
+    margin: 0.4em 0.8em 0em 0.8em;
+  }
   .left-link {
     display: flex;
   }
@@ -19,33 +22,43 @@
   }
   .nav {
     padding: 0.4em 0.4em;
-    border: 0.1em solid #333;
     margin: 0.4em 0.4em;
     text-decoration: none;
+    color: #fcc540;
     display: block;
     position: relative;
-
     .profile-nav {
       position: absolute;
       top: calc(100% + 0.1em);
-      left: -0.1em;
+      left: -1em;
       width: calc(100% + 0.2em);
-      background-color: #fff;
       list-style: none;
-      .profile-nav-item {
-        border: 1px solid #333;
-        padding: 0.2em 0.8em;
+      border-radius: 0.4em;
+      .hor-divider {
         width: 100%;
+        height: 0.1em;
+      }
+      .profile-nav-item {
+        box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+        padding: 0.4em 0.8em;
+        width: 6em;
         text-align: right;
+        background-color: #fff;
         &:hover {
           background-color: #e4e4e4;
         }
       }
+      .profile-nav-item:first-child {
+        border-radius: 0.4em 0.4em 0 0;
+      }
+      .profile-nav-item:last-child {
+        border-radius: 0 0 0.4em 0.4em;
+      }
     }
   }
   .avatar-user {
-    width: 3em;
-    height: 3em;
+    width: 2.8em;
+    height: 2.8em;
     border-radius: 100%;
     border: 1px solid #333;
     margin-right: 0.2em;
@@ -55,11 +68,19 @@
     }
   }
   .nav:hover {
-    background-color: #e3e3e3;
+    color: #000;
     cursor: pointer;
+    &::after {
+      content: "";
+      width: 100%;
+      height: 1;
+    }
+    .profile-nav {
+      color: #fcc540;
+    }
   }
   .nav.active {
     font-weight: bold;
-    color: rgb(234, 70, 33);
+    color: #f65d79;
   }
 }

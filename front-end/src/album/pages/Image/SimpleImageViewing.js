@@ -117,11 +117,11 @@ export default function SimpleImageViewing() {
               {/* Right Arrow */}
               &rarr;
             </button>
-            <button className="display-controller" onClick={() => moveY(-10)}>
+            <button className="display-controller" onClick={() => moveY(10)}>
               {/* Top arrow */}
               &uarr;
             </button>
-            <button className="display-controller" onClick={() => moveY(10)}>
+            <button className="display-controller" onClick={() => moveY(-10)}>
               {/* Down arrow */}
               &darr;
             </button>

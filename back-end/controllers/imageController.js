@@ -6,12 +6,13 @@ const { v4: uuidv4 } = require("uuid");
 
 const user = require("../models/user");
 const image = require("../models/image");
-
+let imageUploadingProgress = [];
 const createDZIFromBuffer = require("../utilities/CreateDZI");
 // const multipleUploadMiddleware = require("../middleware/uploadMultipleImage");
 
 class imageController {
   uploadImages = async (req, res) => {
+    console.log("req.err", req.err);
     console.log("req.body", req.body);
     //Get user root
     const ownUser = await user.findById(req.body.userID);
@@ -32,37 +33,56 @@ class imageController {
 
     const listIDFileSaved = [];
 
+    let processID = uuidv4();
+
     if (req.files.length !== 0) {
+      imageUploadingProgress.push({ id: processID, img: [] });
       for (let index = 0; index < req.files.length; index++) {
         const file = req.files[index];
         let imgInfo;
         if (req.files.length !== 1) {
           imgInfo = JSON.parse(req.body.imgInfo[index]);
         } else imgInfo = JSON.parse(req.body.imgInfo);
-        sharp(file.buffer).toFile(filePath + `${fileNameList[index]}.jpg`);
-        sharp(file.buffer)
-          .resize({ width: 200 })
-          .toFile(filePath + `${fileNameList[index]}_resize.jpg`);
-        const newImage = await new image({
-          imageRoot: [ownUser.userRoot, fileNameList[index]],
-          imageName: imgInfo.title,
-          ownPeople: ownUser._id,
-          dimension: {
-            x: imgInfo.dimension.x,
-            y: imgInfo.dimension.y,
-          },
-          generateAt: imgInfo.generateTime,
-          sharedPeople: [],
-          viewedPeople: [],
-        })
-          .save()
-          .then((data) => {
-            // console.log(data._id);
-            listIDFileSaved.push(data._id);
-          })
-          .catch((err) => {
-            console.log("err", err);
+        const addNewUploadInfor = (imgInfo) => {
+          imageUploadingProgress.forEach((value) => {
+            if (value.id === processID) {
+              value.img.push(imgInfo);
+            }
           });
+        };
+        try {
+          sharp(file.buffer).toFile(filePath + `${fileNameList[index]}.jpg`);
+          sharp(file.buffer)
+            .resize({ width: 200 })
+            .toFile(filePath + `${fileNameList[index]}_resize.jpg`);
+          const newImage = await new image({
+            imageRoot: [ownUser.userRoot, fileNameList[index]],
+            imageName: imgInfo.title,
+            ownPeople: ownUser._id,
+            dimension: {
+              x: imgInfo.dimension.x,
+              y: imgInfo.dimension.y,
+            },
+            generateAt: imgInfo.generateTime,
+            sharedPeople: [],
+            viewedPeople: [],
+          })
+            .save()
+            .then((data) => {
+              // console.log(data._id);
+              listIDFileSaved.push(data._id);
+            })
+            .catch((err) => {
+              console.log("err", err);
+            });
+          addNewUploadInfor("uploaded");
+          console.log(imageUploadingProgress);
+          // console.log("aaa");
+          // imageUploadingProgress.[processID].push("uploaded");
+        } catch (err) {
+          addNewUploadInfor("failed to uploaded");
+          // imageUploadingProgress.[processID].push("failed to uploaded");
+        }
       }
     }
     // console.log(listIDFileSaved);
@@ -79,18 +99,50 @@ class imageController {
         //TODO: Rollback added image
         console.log("err", err);
       });
-    res.status(200).send({ run: true });
-    try {
-      req.files.forEach((file, index) => {
+    let currentUploadProcess = {};
+    for (let i = 0; i < imageUploadingProgress.length; i++) {
+      if (imageUploadingProgress[i].id == processID)
+        currentUploadProcess = imageUploadingProgress[i];
+    }
+    console.log(currentUploadProcess);
+    res
+      .status(200)
+      .send({ run: true, currentUploadProcess: currentUploadProcess });
+
+    req.files.forEach((file, index) => {
+      try {
         createDZIFromBuffer(
           file.buffer,
           __dirname + `/../privates/${ownUser.userRoot}/`,
-          `${fileNameList[index]}`
+          `${fileNameList[index]}`,
+          () => {
+            for (let i = 0; i < imageUploadingProgress.length; i++) {
+              if (imageUploadingProgress[i].id === processID) {
+                imageUploadingProgress[i].img[index] = "deepzoom created";
+              }
+            }
+          }
         );
-      });
-    } catch (err) {
-      console.log("error when create dzi");
-    }
+      } catch (err) {
+        for (let i = 0; i < imageUploadingProgress.length; i++) {
+          if (imageUploadingProgress[i].id === processID) {
+            imageUploadingProgress[i].img[index] = "deepzoom created failed";
+          }
+        }
+      }
+    });
+  };
+
+  checkUploadProgress = async (req, res) => {
+    console.log("req.query", req.query);
+    console.log(imageUploadingProgress);
+    let currentProcess;
+    imageUploadingProgress.forEach((value) => {
+      if (value.id == req.query.processID) {
+        currentProcess = value;
+      }
+    });
+    res.status(200).send({ run: true, currentProcess: currentProcess });
   };
 
   displayImage = async (req, res) => {

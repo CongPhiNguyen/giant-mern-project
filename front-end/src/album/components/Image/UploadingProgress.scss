@@ -1,0 +1,18 @@
+.uploading-progress-container {
+  border: 1px solid #333;
+  padding: 1em;
+  .img-progress-container {
+    display: flex;
+    align-items: center;
+    gap: 1em;
+    .img-uploading {
+      width: 4em;
+      height: 4em;
+      object-fit: cover;
+      border: 1px solid #333;
+    }
+    .image-title {
+      font-size: 1.2em;
+    }
+  }
+}

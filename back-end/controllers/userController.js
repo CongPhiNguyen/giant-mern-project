@@ -63,7 +63,7 @@ class userController {
       });
     }
 
-    if (dataUser === null || dataUser.length == 0) {
+    if (dataUser === null || dataUser?.length === 0) {
       res.status(200).send({
         error: false,
         find: false,
@@ -234,8 +234,7 @@ class userController {
       const userInfo = await user.findOne({ username: jwtInfo.username });
       if (userInfo === null || userInfo === {}) {
         res.status(201).send({ find: false });
-      }
-      res.status(200).send({ find: true, userInfo: userInfo });
+      } else res.status(200).send({ find: true, userInfo: userInfo });
     } catch (e) {
       console.log(e);
       res.status(400).send({ error: "Unauthorize token", find: false });

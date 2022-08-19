@@ -18,7 +18,7 @@
     padding: 2em;
     .login-title {
       text-align: center;
-      margin-bottom: 3.2em;
+      margin-bottom: 1em;
     }
     .captcha-container {
       padding: 1em;
@@ -31,23 +31,23 @@
       display: flex;
       justify-content: space-around;
       align-items: center;
-      padding: 1em;
+      padding: 0.4em 1em;
       .input-title {
         flex: 1;
-        font-size: 1.6em;
+        font-size: 1.4em;
       }
       .input-box {
         flex: 3;
-        padding: 1em;
-        font-size: 1.6em;
+        padding: 0.8em;
+        font-size: 1.4em;
         margin-left: 1em;
       }
     }
     .error-input {
-      margin-left: 1em;
-      font-size: 1.4em;
+      margin-left: 0.6em;
+      font-size: 1.2em;
       color: red;
-      margin-top: -1em;
+      margin-top: -0.4em;
       margin-bottom: 1em;
     }
     .note-captcha {
@@ -64,8 +64,8 @@
     .input-concrete {
       display: flex;
       .input-box {
-        padding: 1em;
-        font-size: 1.6em;
+        padding: 0.8em;
+        font-size: 1.4em;
       }
       .send-otp-button {
         flex: 1;

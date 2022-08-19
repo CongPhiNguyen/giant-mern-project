@@ -21,11 +21,20 @@ const multer = require("multer");
 
 router.post(
   "/upload",
-  multer().array("listImages"),
+  multer({
+    limits: { fileSize: 10 * 1024 * 1024 },
+    onError: function (err, next) {
+      console.log("error", err);
+      req.err = true;
+      next();
+    },
+  }).array("listImages"),
   imageControler.uploadImages
 );
 
 router.get("/get-all-own-images", imageControler.getAllOwnImage);
+router.get("/check-progress-upload", imageControler.checkUploadProgress);
+
 // router.get("/dzi/:user-root/:image-root", imageControler.displayImage);
 router.get("/:user-root/:image-root", imageControler.displayImage);
 

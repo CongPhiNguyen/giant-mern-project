@@ -2,7 +2,7 @@ const sharp = require("sharp");
 const fs = require("fs");
 const extract = require("extract-zip");
 
-const createDZIFromBuffer = (buffer, path, fileName) => {
+const createDZIFromBuffer = (buffer, path, fileName, onSuccess) => {
   sharp(buffer)
     .png()
     .tile({
@@ -19,6 +19,7 @@ const createDZIFromBuffer = (buffer, path, fileName) => {
             fs.unlink(path + fileName + ".zip", (err) => {
               if (err) throw err;
               console.log(`${path + fileName + ".zip"} was deleted`);
+              onSuccess();
             });
           })
           .catch((err) => {
