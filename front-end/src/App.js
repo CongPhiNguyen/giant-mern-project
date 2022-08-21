@@ -29,13 +29,19 @@ import { BrowserRouter } from "react-router-dom";
 import Routers from "./routers";
 import Header from "./shared/components/Header";
 import AbstractModal from "./shared/modals/AbstractModal";
+import ControllBar from "./shared/components/ControllBar";
 
 function App() {
   return (
     <BrowserRouter>
-      <Header></Header>
+      <Header />
       <div className="app-container">
-        <Routers />
+        <div className="app-page-container">
+          <ControllBar />
+          <div className="app-content-container">
+            <Routers />
+          </div>
+        </div>
         <AbstractModal />
       </div>
     </BrowserRouter>

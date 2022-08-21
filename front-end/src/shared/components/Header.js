@@ -79,19 +79,21 @@ function Header() {
   return (
     <header className="app-navigation">
       <div className="left-link">
+        <img src="./icon.gif" alt="logo" className="logo" />
         <img
-          src="https://itviec.com/rails/active_storage/representations/proxy/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBeHlyRXc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--29ee6adc091053a4f05829cbd2b72b216cc8ada4/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdCem9MWm05eWJXRjBTU0lJY0c1bkJqb0dSVlE2RkhKbGMybDZaVjkwYjE5c2FXMXBkRnNIYVFJc0FXa0NMQUU9IiwiZXhwIjpudWxsLCJwdXIiOiJ2YXJpYXRpb24ifX0=--ee4e4854f68df0a745312d63f6c2782b5da346cd/Taptap_mainlogo-03.png"
+          src="https://www.taptap.com.vn/wp-content/uploads/2021/11/taptap-logo.svg"
           alt=""
-          className="logo"
+          className="logo-standing"
         />
         {userInfo.username && (
           <React.Fragment>
-            <NavLink className="nav" to="/home">
+            <img></img>
+            {/* <NavLink className="nav" to="/home">
               Home
             </NavLink>
             <NavLink className="nav" to="/image/">
               Image
-            </NavLink>
+            </NavLink> */}
           </React.Fragment>
         )}
       </div>

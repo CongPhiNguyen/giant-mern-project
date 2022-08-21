@@ -3,11 +3,16 @@ import { useSelector } from "react-redux";
 import "./ImagesViewing.scss";
 
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+
 import ImageDisplayer from "../../components/Image/ImageDisplayer";
 import ImagePreviewPane from "../../components/Image/ImagePreviewPane";
 import ImageGroupDisplayer from "../../components/Image/ImageGroupDisplayer";
+import ViewHeading from "../../shared/components/ViewHeading";
 
 export default function ImagesViewing() {
+  const navigate = useNavigate();
+
   const [imagesInfo, setImagesInfo] = useState([]);
   const [isDisplayPreviewPane, setDisplayPreviewPane] = useState(false);
   const [imagesSelectedIndex, setImagesSelectedIndex] = useState(-1);
@@ -40,9 +45,22 @@ export default function ImagesViewing() {
 
   // console.log("userInfo", userInfo);
 
+  const navigateToUpload = () => {
+    navigate("/image/upload");
+  };
+
   return (
     <div style={{ display: "flex" }}>
       <div className="page-container">
+        <div className="view-heading-container">
+          <ViewHeading
+            buttonAdd={
+              <button className="add-new" onClick={navigateToUpload}>
+                Upload Image
+              </button>
+            }
+          />
+        </div>
         <div className="content-container">
           <div
             className="image-list"

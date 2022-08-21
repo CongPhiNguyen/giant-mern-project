@@ -14,16 +14,22 @@
   min-height: calc(100vh - 5.2em);
   position: relative;
   overflow-x: hidden;
-  .page-container {
-    max-width: 120em;
-    width: 80%;
-    margin: 0em auto;
-    padding-top: 3em;
-    position: relative;
-    overflow-x: hidden;
-    .content-container {
-      background-color: #fff;
-      margin: auto;
+  .app-page-container {
+    display: flex;
+    .app-content-container {
+      flex: 1;
+    }
+    .page-container {
+      max-width: 120em;
+      width: 80%;
+      margin: 0em auto;
+      padding-top: 3em;
+      position: relative;
+      overflow-x: hidden;
+      .content-container {
+        background-color: #fff;
+        margin: auto;
+      }
     }
   }
 }
@@ -45,5 +51,12 @@
 }
 
 .hidden {
-  display: none;
+  display: none !important;
+}
+
+.divider {
+  width: 80%;
+  height: 1px;
+  background-color: #333;
+  margin-top: 0.1em;
 }

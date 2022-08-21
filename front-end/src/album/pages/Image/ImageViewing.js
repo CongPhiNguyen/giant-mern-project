@@ -30,7 +30,7 @@ export default function ImageViewing() {
         opacity: 1,
       })
     );
-  }, []);
+  }, [params.userID, params.imgID]);
   console.log(params);
   return (
     <div>

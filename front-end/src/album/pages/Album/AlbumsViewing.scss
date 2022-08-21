@@ -1,7 +1,11 @@
 .album-list {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
-  align-content: center;
+  // justify-content: center;
+  // align-content: center;
   padding: 2em;
+}
+
+.view-heading-container {
+  margin: 0 4em 1em 4em;
 }

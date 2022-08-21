@@ -7,9 +7,6 @@ const Home = React.lazy(() => import("../shared/pages/Home"));
 const ImageViewing = React.lazy(() =>
   import("../album/pages/Image/ImageViewing")
 );
-const ImageControlling = React.lazy(() =>
-  import("../album/pages/Image/ImageControlling")
-);
 const ImagesUploading = React.lazy(() =>
   import("../album/pages/Image/ImagesUploading")
 );
@@ -32,7 +29,6 @@ const publicRoute = [
 // Những route dùng khi đã đăng nhập
 const protectedRoute = [
   { path: "/home", name: "Home", element: <Home /> },
-  { path: "/image/", name: "ImageControlling", element: <ImageControlling /> },
   {
     path: "/image/view/:userID/:imgID",
     name: "ImageViewing",

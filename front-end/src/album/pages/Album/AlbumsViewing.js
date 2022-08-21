@@ -5,8 +5,14 @@ import axios from "axios";
 
 import AlbumDisplayer from "../../components/Album/AlbumDisplayer";
 import AlbumPreviewPane from "../../components/Album/AlbumPreviewPane";
+import ViewHeading from "../../shared/components/ViewHeading";
+
+import { useDispatch } from "react-redux/es/hooks/useDispatch";
+import { showModal } from "../../../shared/modals/ModalSlice";
 
 export default function AlbumsViewing() {
+  const dispatch = useDispatch();
+
   const [albumsInfo, setAlbumsInfo] = useState([]);
   const [albumsSelectedIndex, setAlbumsSelectedIndex] = useState(-1);
   const [isDisplayPreviewPane, setDisplayPreviewPane] = useState(false);
@@ -39,9 +45,24 @@ export default function AlbumsViewing() {
   const closePreviewPane = () => {
     setDisplayPreviewPane(false);
   };
+
+  const displayModal = () => {
+    dispatch(showModal("Add new album"));
+  };
+
   return (
     <div style={{ display: "flex" }}>
       <div className="page-container">
+        <div className="view-heading-container">
+          <ViewHeading
+            buttonAdd={
+              <button className="add-new" onClick={displayModal}>
+                Add new album
+              </button>
+            }
+          />
+        </div>
+
         <div className="content-container">
           <div
             className="album-list"
