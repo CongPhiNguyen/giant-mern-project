@@ -38,6 +38,15 @@ export default function ControllBar() {
         >
           Albums
         </p>
+        <p
+          className="content-item"
+          onClick={() => {
+            navigate("/processing");
+          }}
+        >
+          {/* TODO: Cập nhật % ở đây và hiện lên khi đang upload */}
+          Processing
+        </p>
       </section>
       <section className="content-section">
         <p className="title">Received</p>

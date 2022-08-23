@@ -49,6 +49,10 @@ export default function ImagesViewing() {
     navigate("/image/upload");
   };
 
+  const changeCurrrentIndex = (index) => {
+    setImagesSelectedIndex(index);
+  };
+
   return (
     <div style={{ display: "flex" }}>
       <div className="page-container">
@@ -93,6 +97,7 @@ export default function ImagesViewing() {
         closePreviewPane={closePreviewPane}
         display={isDisplayPreviewPane}
         imageInfo={imagesInfo[imagesSelectedIndex]}
+        changeIndex={changeCurrrentIndex}
       />
     </div>
   );

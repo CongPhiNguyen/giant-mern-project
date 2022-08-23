@@ -1,5 +1,5 @@
 const express = require("express");
-const imageControler = require("../controllers/imageController");
+const imageController = require("../controllers/imageController");
 const router = express.Router();
 const multer = require("multer");
 
@@ -29,13 +29,14 @@ router.post(
       next();
     },
   }).array("listImages"),
-  imageControler.uploadImages
+  imageController.uploadImages
 );
 
-router.get("/get-all-own-images", imageControler.getAllOwnImage);
-router.get("/check-progress-upload", imageControler.checkUploadProgress);
+router.get("/get-all-own-images", imageController.getAllOwnImage);
+router.get("/check-progress-upload", imageController.checkUploadProgress);
+router.get("/get-concrete-image", imageController.getConcreteImagebyPathName);
+router.get("/:user-root/:image-root", imageController.displayImage);
 
-// router.get("/dzi/:user-root/:image-root", imageControler.displayImage);
-router.get("/:user-root/:image-root", imageControler.displayImage);
+router.delete("/", imageController.deleteImage);
 
 module.exports = router;

@@ -1,24 +1,32 @@
-import React, { createRef, useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import "./UploadingBox.scss";
 
 import { BsThreeDots } from "react-icons/bs";
 import axios from "axios";
 import { toast } from "react-toastify";
-
-import UploadingProgress from "./UploadingProgress";
 import { Line } from "rc-progress";
 
+import UploadingProgress from "./UploadingProgress";
+import ImageInfo from "./Uploading/ImageInfo";
+import { setLoadImageCount, setUploadingImageInfo } from "../../imageSlice";
+import { useDispatch } from "react-redux";
+
 export default function UploadingBox() {
+  const dispatch = useDispatch();
+
   const [listImage, setListImage] = useState([]);
   const [listImageData, setListImageData] = useState([]);
+  const [listImageSaveData, setListSaveImage] = useState([]);
+  const [listImageWH, setListImageWH] = useState([]);
+
   const [albumsInfo, setAlbumsInfo] = useState([]);
   const [currentSelectedImageIndex, setCurrentSelectedImageIndex] =
     useState(-1);
-  const [listImageSaveData, setListSaveImage] = useState([]);
-  const [listImageWH, setListImageWH] = useState([]);
+
   const [percentUpload, setPercentUpload] = useState(0);
 
+  // Processing
   const [serverProcessing, setServerProcessing] = useState([]);
   const [processID, setProcessID] = useState("");
 
@@ -26,6 +34,11 @@ export default function UploadingBox() {
   const userInfo = useSelector(
     (state) => state.sharedSlice.currentUserInformation
   );
+
+  const currentInputValue = useSelector(
+    (state) => state.imageSlice.uploadingImageInfo
+  );
+
   // Get all user albums
   useEffect(() => {
     const getAllUserAlbums = () => {
@@ -51,6 +64,14 @@ export default function UploadingBox() {
   const getListImage = (e) => {
     console.log(document.querySelector("#img-input").files);
     const listFile = e.target.files;
+
+    dispatch(
+      setLoadImageCount({
+        length: e.target.files.length,
+        fromIndex: listImage.length,
+      })
+    );
+
     setListImage((prev) => {
       return [...prev, ...listFile];
     });
@@ -60,64 +81,18 @@ export default function UploadingBox() {
 
     [...listFile].forEach((file) => {
       let reader = new FileReader();
-      let imgData;
+      let imgData = e;
       reader.onload = (e) => {
         imgData = e.target.result;
-
         setListImageData((prev) => {
           return [...prev, imgData];
         });
       };
       reader.readAsDataURL(file);
     });
-
-    imgInputRef.push({
-      titleRef: createRef(),
-      descriptionRef: createRef(),
-      altRef: createRef(),
-    });
   };
 
-  const uploadListImageHandle = () => {
-    //TODO: Tách component chỗ này ra
-    if (listImage.length === 0) {
-      toast("You must choose at least 1 images to upload");
-      return;
-    }
-    //   titleRef: createRef(),
-    //   descriptionRef: createRef(),
-    //   altRef: createRef(),
-    let imgInfo = [];
-    listImage.forEach(() => {
-      imgInfo.push({
-        title: "1",
-        desription: "11",
-        alt: "123",
-        storage: 1234,
-        dimension: {
-          x: 100,
-          y: 100,
-        },
-        generateTime: new Date(),
-      });
-    });
-    // imgInputRef.map((inputRef) => {
-    //   imgInfo.push({
-    //     title: inputRef.titleRef.current.value,
-    //     description: inputRef.descriptionRef.current.value,
-    //     alt: inputRef.altRef.current.value,
-    //   });
-    // });
-    // console.log("imgInfo", imgInfo);
-    const uploadImagesData = new FormData();
-    listImage.forEach((img) => {
-      uploadImagesData.append("listImages", img);
-    });
-    uploadImagesData.append("userID", userInfo._id);
-    imgInfo.forEach((img) => {
-      uploadImagesData.append("imgInfo", JSON.stringify(img));
-    });
-
+  const callAPISendImages = (uploadImagesData) => {
     axios.defaults.withCredentials = true;
     const config = {
       headers: {
@@ -135,8 +110,6 @@ export default function UploadingBox() {
       .then((data) => {
         console.log("data", data);
         setProcessID(data.data.currentUploadProcess.id);
-        // callCheckProgress(data.data.currentUploadProcess.id);
-
         checkingProcessInterval = setInterval(() => {
           callCheckProgress(data.data.currentUploadProcess.id);
         }, 1000);
@@ -144,6 +117,30 @@ export default function UploadingBox() {
       .catch((err) => {
         console.log("err", err);
       });
+  };
+
+  const uploadListImageHandle = () => {
+    if (listImage.length === 0) {
+      toast("You must choose at least 1 images to upload");
+      return;
+    }
+
+    const uploadImagesData = new FormData();
+    listImage.forEach((img) => {
+      uploadImagesData.append("listImages", img);
+    });
+    uploadImagesData.append("userID", userInfo._id);
+    currentInputValue.forEach((img) => {
+      uploadImagesData.append("imgInfo", JSON.stringify(img));
+    });
+
+    // Logs form data
+    for (const pair of uploadImagesData.entries()) {
+      console.log(pair[0] + ", " + pair[1]);
+    }
+
+    // Call api send images
+    callAPISendImages(uploadImagesData);
   };
 
   const callCheckProgress = (processID) => {
@@ -154,7 +151,6 @@ export default function UploadingBox() {
         { withCredentials: true }
       )
       .then((data) => {
-        // console.log("data.data.currentProcess", data.data.currentProcess.img);
         if (
           data.data.currentProcess.img.every((value) => value != "uploaded")
         ) {
@@ -165,6 +161,7 @@ export default function UploadingBox() {
         console.log("err", err);
       });
   };
+
   const deleteCurrentImageFromQueue = (removeIndex) => {
     //TODO: Xóa các image ra khỏi input file
     setListImageData((prev) =>
@@ -182,14 +179,39 @@ export default function UploadingBox() {
     setCurrentSelectedImageIndex(-1);
   };
 
-  const convertToComputerSize = (size) => {
-    return Math.round((size * 100) / 1024) / 100 + "KB";
+  const onLoadImage = (e) => {
+    if (
+      e.target.src ===
+      "https://upload.wikimedia.org/wikipedia/commons/b/b1/Loading_icon.gif"
+    )
+      return;
+    if (listImage.length <= listImageWH.length) return;
+    setListImageWH((prev) => {
+      dispatch(
+        setUploadingImageInfo({
+          index: prev.length,
+          value: {
+            storage: listImage[prev.length]?.size,
+            dimension: {
+              x: e.target.naturalWidth,
+              y: e.target.naturalHeight,
+            },
+            generateTime:
+              listImage[prev.length]?.lastModifiedDate.toISOString(),
+          },
+        })
+      );
+      return [
+        ...prev,
+        {
+          width: e.target.naturalWidth,
+          height: e.target.naturalHeight,
+        },
+      ];
+    });
   };
 
-  let imgInputRef = [];
-
-  console.log("listImage", listImage);
-  console.log("listImageWH", listImageWH);
+  console.log("currentInputValue", currentInputValue);
 
   return (
     <React.Fragment>
@@ -242,20 +264,7 @@ export default function UploadingBox() {
                     index === currentSelectedImageIndex ? "selected" : ""
                   }`}
                   onLoad={(e) => {
-                    // console.log("e.target.src", e.target.src);
-                    if (
-                      e.target.src ===
-                      "https://upload.wikimedia.org/wikipedia/commons/b/b1/Loading_icon.gif"
-                    )
-                      return;
-                    if (listImage.length <= listImageWH.length) return;
-                    setListImageWH((prev) => [
-                      ...prev,
-                      {
-                        width: e.target.naturalWidth,
-                        height: e.target.naturalHeight,
-                      },
-                    ]);
+                    onLoadImage(e);
                   }}
                   onClick={() => {
                     setCurrentSelectedImageIndex(index);
@@ -282,82 +291,22 @@ export default function UploadingBox() {
             ></input>
           </div>
           <div className="img-upload-infor">
-            {listImageSaveData.map((imgData, index) => {
-              return (
-                <div
-                  className={`${
-                    currentSelectedImageIndex === index ? "block" : "hidden"
-                  }`}
-                >
-                  <section className="input-area">
-                    {currentSelectedImageIndex !== -1 &&
-                      listImage.length !== 0 && (
-                        <div className="img-manage">
-                          <p className="img-index">{`${
-                            currentSelectedImageIndex + 1
-                          }/${listImage.length}`}</p>
-                          <p
-                            className="delete-icon noselect"
-                            onClick={() => {
-                              deleteCurrentImageFromQueue(
-                                currentSelectedImageIndex
-                              );
-                            }}
-                          >
-                            Delete
-                          </p>
-                        </div>
-                      )}
-
-                    <input
-                      type="text"
-                      className="title"
-                      placeholder="Nhập tiêu đề"
-                      ref={imgInputRef[index]?.titleRef}
-                    />
-                    <div className="user-info">
-                      <img
-                        src={userInfo?.avatarURL}
-                        alt=""
-                        className="user-avatar"
-                      />
-                      <p className="user-name">{userInfo?.username} </p>
-                    </div>
-                    <textarea
-                      className="image-description"
-                      rows="2"
-                      placeholder="Nhập mô tả"
-                      ref={imgInputRef[index]?.descriptionRef}
-                    ></textarea>
-                    <input
-                      type="text"
-                      className="alt-text"
-                      placeholder="Nhập văn bản thay thế"
-                      ref={imgInputRef[index]?.altRef}
-                    />
-                  </section>
-                  <div className="img-attribute">
-                    <p className="title">Thông tin file</p>
-                    <p className="file-info-concrete">
-                      Size:{" "}
-                      {currentSelectedImageIndex !== -1 &&
-                        convertToComputerSize(
-                          listImage[currentSelectedImageIndex]?.size
-                        )}
-                      {listImageWH[currentSelectedImageIndex] &&
-                        ` (${listImageWH[currentSelectedImageIndex].width}x${listImageWH[currentSelectedImageIndex].height})`}
-                    </p>
-                    <p className="file-info-concrete">
-                      Last change:{" "}
-                      {currentSelectedImageIndex !== -1 &&
-                        listImage[
-                          currentSelectedImageIndex
-                        ]?.lastModifiedDate.toString()}
-                    </p>
-                  </div>
-                </div>
-              );
-            })}
+            {currentSelectedImageIndex !== -1 &&
+              listImageSaveData.map((imgData, index) => {
+                return (
+                  <ImageInfo
+                    key={index}
+                    isShow={index === currentSelectedImageIndex}
+                    index={index}
+                    listImageLength={listImage.length}
+                    deleteCurrentImageFromQueue={deleteCurrentImageFromQueue}
+                    size={listImage[index]?.size}
+                    width={listImageWH[index]?.width}
+                    height={listImageWH[index]?.height}
+                    lastModified={listImage[index]?.lastModifiedDate.toString()}
+                  />
+                );
+              })}
 
             <button
               className="img-uploader"

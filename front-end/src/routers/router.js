@@ -19,6 +19,9 @@ const ImagesViewing = React.lazy(() =>
 const SimpleImageViewing = React.lazy(() =>
   import("../album/pages/Image/SimpleImageViewing")
 );
+const ProcessUploading = React.lazy(() =>
+  import("../album/pages/Image/ProcessUploading")
+);
 
 // Những route chỉ truy xuất khi chưa đăng nhập
 const publicRoute = [
@@ -50,6 +53,11 @@ const protectedRoute = [
     element: <ImagesViewing />,
   },
   { path: "/album", name: "AlbumsViewing", element: <AlbumsViewing /> },
+  {
+    path: "/processing",
+    name: "ProcessUploading",
+    element: <ProcessUploading />,
+  },
 ];
 
 // route dùng cho mọi trường hợp

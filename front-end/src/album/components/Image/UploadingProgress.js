@@ -8,7 +8,7 @@ export default function UploadingProgress(props) {
       Uploading
       {props.listImageData.map((imageData, index) => {
         return (
-          <div className="img-progress-container">
+          <div className="img-progress-container" key={index}>
             <img src={imageData} className="img-uploading"></img>
             <p className="image-title">{props.listImage[index].name}</p>
             <p className="progress">Uploading....</p>

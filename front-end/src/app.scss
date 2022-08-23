@@ -17,7 +17,7 @@
   .app-page-container {
     display: flex;
     .app-content-container {
-      flex: 1;
+      width: calc(100vw - 20em);
     }
     .page-container {
       max-width: 120em;

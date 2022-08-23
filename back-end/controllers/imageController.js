@@ -10,6 +10,8 @@ let imageUploadingProgress = [];
 const createDZIFromBuffer = require("../utilities/CreateDZI");
 // const multipleUploadMiddleware = require("../middleware/uploadMultipleImage");
 
+const baseFilePath = __dirname + "/../privates/";
+
 class imageController {
   uploadImages = async (req, res) => {
     console.log("req.err", req.err);
@@ -21,7 +23,7 @@ class imageController {
       return;
     }
 
-    const filePath = __dirname + `/../privates/${ownUser.userRoot}/`;
+    const filePath = baseFilePath + ownUser.userRoot;
     fs.promises.mkdir(filePath, { recursive: true });
     //Add to mongo
     const fileNameList = [];
@@ -51,18 +53,21 @@ class imageController {
           });
         };
         try {
-          sharp(file.buffer).toFile(filePath + `${fileNameList[index]}.jpg`);
+          sharp(file.buffer).toFile(filePath + `/${fileNameList[index]}.jpg`);
           sharp(file.buffer)
             .resize({ width: 200 })
-            .toFile(filePath + `${fileNameList[index]}_resize.jpg`);
+            .toFile(filePath + `/${fileNameList[index]}_resize.jpg`);
           const newImage = await new image({
             imageRoot: [ownUser.userRoot, fileNameList[index]],
             imageName: imgInfo.title,
+            alt: imgInfo.alt,
             ownPeople: ownUser._id,
+            storage: imgInfo.storage,
             dimension: {
               x: imgInfo.dimension.x,
               y: imgInfo.dimension.y,
             },
+            description: imgInfo.description,
             generateAt: imgInfo.generateTime,
             sharedPeople: [],
             viewedPeople: [],
@@ -157,9 +162,10 @@ class imageController {
     // var fileName = "GeeksforGeeks.txt";
     res.sendFile(fileName + ".jpg", options, function (err) {
       if (err) {
-        console.log("err", err);
+        res.status(400).send({
+          err: err.message,
+        });
       } else {
-        // console.log("Sent:", fileName);
       }
     });
   };
@@ -179,7 +185,9 @@ class imageController {
     // var fileName = "GeeksforGeeks.txt";
     res.sendFile(req.params.number, options, function (err) {
       if (err) {
-        // console.log("err", err);
+        res.status(400).send({
+          err: err.message,
+        });
       } else {
         // console.log("Sent:", fileName);
       }
@@ -194,6 +202,98 @@ class imageController {
       .populate({ path: "ownImages", options: { strictPopulate: false } });
     // console.log("dataUser", dataUser);
     res.status(200).send({ run: true, imageInfo: dataUser?.ownImages || [] });
+  };
+
+  getConcreteImagebyPathName = async (req, res) => {
+    console.log("req.query", req.query);
+    const imgData = await image.findOne({
+      imageRoot: [req.query.userID, req.query.imgID],
+    });
+    if (!imgData) {
+      res.status(201).send({ find: false });
+    } else {
+      res.status(201).send({
+        find: true,
+        imgInfo: {
+          ...imgData._doc,
+        },
+      });
+    }
+  };
+
+  deleteImage = async (req, res) => {
+    console.log("req.query", req.query);
+    console.log("req.cookies", req.cookies);
+
+    // With database
+    const deleteImageInImage = (nextFunction) => {
+      image
+        .findByIdAndDelete(req.query.imgID)
+        .then((data) => {
+          nextFunction();
+        })
+        .catch((err) => {
+          res.status(400).send({
+            success: true,
+            message: "Fail to delete image in user database",
+          });
+        });
+    };
+
+    const deleteImageInUser = (nextFunction) => {
+      user
+        .findByIdAndUpdate(req.query.ownUserID, {
+          $pull: { ownImages: req.query.imgID },
+        })
+        .then((data) => {
+          nextFunction();
+        })
+        .catch((err) => {
+          res.status(400).send({
+            success: true,
+            message: "Fail to delete image in user database",
+          });
+        });
+    };
+
+    // With server
+    const deleteImageAndFolderInServer = (nextFunction) => {
+      const imagePath = baseFilePath + JSON.parse(req.query.path).join("/");
+      console.log(imagePath);
+      try {
+        fs.rmSync(imagePath, { recursive: true, force: true });
+        fs.unlink(imagePath + ".jpg", (err) => {
+          if (err) {
+            throw err;
+          } else
+            fs.unlink(imagePath + "_resize.jpg", (err) => {
+              if (err) {
+                throw err;
+              } else nextFunction();
+            });
+        });
+      } catch (err) {
+        res.status(400).send({
+          err: err.message,
+          message: "Failed to delete image in host server",
+        });
+      }
+    };
+
+    const finalFunction = () => {
+      res
+        .status(200)
+        .send({ success: true, message: "Delete image successfully" });
+    };
+
+    // Final chain
+    deleteImageInUser(() => {
+      deleteImageInImage(() => {
+        deleteImageAndFolderInServer(() => {
+          finalFunction();
+        });
+      });
+    });
   };
 }
 module.exports = new imageController();

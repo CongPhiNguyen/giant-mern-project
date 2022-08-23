@@ -3,10 +3,12 @@ const cors = require("cors");
 const connectDB = require("./config/dbConfig.js"); // connect MongoDB
 const PORT = process.env.PORT || 5000; // port number
 const app = express();
+const cookieParser = require("cookie-parser");
 const route = require("./routers/index"); // router impl
 // const multer = require("multer");
 const bodyParser = require("body-parser");
 
+app.use(cookieParser());
 app.use("/privates", express.static("./privates"));
 // const upload = multer();
 //some middleware

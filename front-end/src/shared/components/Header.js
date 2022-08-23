@@ -72,14 +72,14 @@ function Header() {
     cookiesUtil.remove("_jwt");
     dispatch(setCurrentUser({}));
     dispatch(setCurrentUserInformation({}));
-    window.location.reload();
     navigate("/sign-in");
+    window.location.reload();
   };
 
   return (
     <header className="app-navigation">
       <div className="left-link">
-        <img src="./icon.gif" alt="logo" className="logo" />
+        <img src="/logo.png" alt="logo" className="logo" />
         <img
           src="https://www.taptap.com.vn/wp-content/uploads/2021/11/taptap-logo.svg"
           alt=""

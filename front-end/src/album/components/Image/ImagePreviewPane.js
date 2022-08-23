@@ -8,7 +8,6 @@ import { NavLink } from "react-router-dom";
 
 export default function ImagePreviewPane(props) {
   console.log(props);
-  // console.log(props.imageInfo?.haveAlbums?.length);
 
   const [ownimageInfo, setOwnimageInfo] = useState({});
 
@@ -53,6 +52,32 @@ export default function ImagePreviewPane(props) {
   }, [props.imageInfo?.ownPeople]);
 
   // console.log("ownimageInfo", ownimageInfo);
+  const getFatherAlbum = (fatherAlbums) => {
+    if (fatherAlbums?.length === 0) {
+      return props.imageInfo.imageName;
+    } else return "aaa";
+  };
+
+  const deleteCurrentImage = () => {
+    axios.defaults.withCredentials = true;
+    const url = "http://localhost:5000/api/image";
+    axios
+      .delete(url, {
+        params: {
+          imgID: props.imageInfo?._id,
+          ownUserID: props.imageInfo?.ownPeople,
+          path: JSON.stringify(props.imageInfo?.imageRoot),
+        },
+      })
+      .then((data) => {
+        console.log("data", data);
+      })
+      .catch((err) => {
+        console.log("err", err);
+      });
+    props.changeIndex(-1);
+  };
+
   return (
     <CSSTransition
       in={props.display}
@@ -72,24 +97,8 @@ export default function ImagePreviewPane(props) {
           <p className="title">Details</p>
           <div className="divider"></div>
           <p className="information-concrete">
-            <label className="information-label">Children albums:</label>
-            {props.imageInfo?.haveAlbums?.length ?? " Không xác định"}
-          </p>
-          <p className="information-concrete">
-            <label className="information-label">Total images:</label>
-            {props.imageInfo?.haveImages?.length ?? " Không xác định"}
-          </p>
-          <p className="information-concrete">
-            <label className="information-label">Storage:</label>
-            {props.imageInfo?.storage ?? " Không xác định"}
-          </p>
-          <p className="information-concrete">
-            <label className="information-label">Lastchange :</label>
-            {props.imageInfo?.updatedAt
-              ? toReadAbleDate(props.imageInfo?.updatedAt) +
-                " " +
-                calculateTime(props.imageInfo?.updatedAt)
-              : "Không xác định"}
+            <label className="information-label">ImageName:</label>
+            {props.imageInfo?.imageName ?? " Không xác định"}
           </p>
         </section>
         <section className="information-attribute information-section">
@@ -106,7 +115,17 @@ export default function ImagePreviewPane(props) {
           </p>
           <p className="information-concrete">
             <label className="information-label">Location:</label>
-            {`${ownimageInfo?.username}/${props.imageInfo?.albumName}`}
+            {`${ownimageInfo?.username}/${getFatherAlbum(
+              props.imageInfo?.fatherAlbums
+            )}`}
+          </p>
+          <p className="information-concrete">
+            <label className="information-label">Size:</label>
+            {`${props.imageInfo?.dimension.x}x${props.imageInfo?.dimension.y}`}
+          </p>
+          <p className="information-concrete">
+            <label className="information-label">Storage:</label>
+            {props.imageInfo?.storage}
           </p>
         </section>
         <section className="information-permission information-section">
@@ -133,6 +152,10 @@ export default function ImagePreviewPane(props) {
             >
               SimpleView
             </Link>
+          </p>
+          <p className="information-concrete delete">
+            <button onClick={() => deleteCurrentImage()}>Delete</button>
+            <button>Change name</button>
           </p>
         </section>
       </div>
