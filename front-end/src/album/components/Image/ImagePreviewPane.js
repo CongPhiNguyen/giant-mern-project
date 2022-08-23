@@ -1,37 +1,111 @@
-import React, { useEffect, useState } from "react";
+import React, { useRef, useEffect, useState, createRef } from "react";
 import "./ImagePreviewPane.scss";
 import { Link } from "react-router-dom";
 
 import axios from "axios";
 import { CSSTransition } from "react-transition-group";
 import { NavLink } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { changeAnImage, deleteAnImage } from "../../imageSlice";
+import { toast } from "react-toastify";
+
+const valueChangeEnum = {
+  NAME: "NAME",
+  DESCRIPTION: "DESCRIPTION",
+  ALT: "ALT",
+};
+
+const calculateTime = (timeString) => {
+  const postTime = new Date(timeString);
+  var diff = Math.abs(new Date() - postTime);
+  if (diff < 1000 * 60) {
+    return "0 minutes ago";
+  } else if (diff < 1000 * 60 * 60) {
+    return Math.floor(diff / 1000 / 60) + " minutes ago";
+  } else if (diff < 1000 * 60 * 60 * 24) {
+    return Math.floor(diff / 1000 / 60 / 60) + " hours ago";
+  } else if (diff < 1000 * 60 * 60 * 24 * 30) {
+    return Math.floor(diff / 1000 / 60 / 60 / 24) + " days ago";
+  } else if (diff < 1000 * 60 * 60 * 24 * 365) {
+    return Math.floor(diff / 1000 / 60 / 60 / 24 / 30) + " months ago";
+  } else {
+    return Math.floor(diff / 1000 / 60 / 60 / 24 / 365) + " years ago";
+  }
+};
+//TODO: Làm một hàm tính ngày và thời gian để sử dụng chung ở đây
+const toReadAbleDate = (dateString) => {
+  const splitInfo = dateString.slice(0, 10).split("-");
+  return splitInfo[2] + "/" + splitInfo[1] + "/" + splitInfo[0];
+};
 
 export default function ImagePreviewPane(props) {
+  const dispatch = useDispatch();
   console.log(props);
 
   const [ownimageInfo, setOwnimageInfo] = useState({});
+  const [isEdittingName, setIsEdittingName] = useState(false);
+  const [isEdittingDescription, setIsEdittingDescription] = useState(false);
+  const [isEdittingAltText, setIsEdittingAltText] = useState(false);
 
-  const calculateTime = (timeString) => {
-    const postTime = new Date(timeString);
-    var diff = Math.abs(new Date() - postTime);
-    if (diff < 1000 * 60) {
-      return "0 minutes ago";
-    } else if (diff < 1000 * 60 * 60) {
-      return Math.floor(diff / 1000 / 60) + " minutes ago";
-    } else if (diff < 1000 * 60 * 60 * 24) {
-      return Math.floor(diff / 1000 / 60 / 60) + " hours ago";
-    } else if (diff < 1000 * 60 * 60 * 24 * 30) {
-      return Math.floor(diff / 1000 / 60 / 60 / 24) + " days ago";
-    } else if (diff < 1000 * 60 * 60 * 24 * 365) {
-      return Math.floor(diff / 1000 / 60 / 60 / 24 / 30) + " months ago";
-    } else {
-      return Math.floor(diff / 1000 / 60 / 60 / 24 / 365) + " years ago";
-    }
+  const buttonChangeGroupDOM = (valueChangeType) => {
+    return (
+      <div>
+        {(valueChangeType === valueChangeEnum.NAME && !isEdittingName) ||
+        (valueChangeType === valueChangeEnum.DESCRIPTION &&
+          !isEdittingDescription) ||
+        (valueChangeType === valueChangeEnum.ALT && !isEdittingAltText) ? (
+          <button
+            onClick={() => {
+              if (valueChangeType === valueChangeEnum.NAME) {
+                setIsEdittingName(true);
+              } else if (valueChangeType === valueChangeEnum.DESCRIPTION) {
+                setIsEdittingDescription(true);
+              } else if (valueChangeType === valueChangeEnum.ALT) {
+                setIsEdittingAltText(true);
+              }
+            }}
+          >
+            Change
+            {valueChangeType === valueChangeEnum.NAME
+              ? " name"
+              : valueChangeType === valueChangeEnum.DESCRIPTION
+              ? " description"
+              : valueChangeType === valueChangeEnum.ALT
+              ? " altText"
+              : ""}
+          </button>
+        ) : (
+          <React.Fragment>
+            <button
+              onClick={() => {
+                changeValue(valueChangeType);
+              }}
+            >
+              Save
+            </button>
+            <button
+              onClick={() => {
+                if (valueChangeType === valueChangeEnum.NAME) {
+                  setIsEdittingName(false);
+                } else if (valueChangeType === valueChangeEnum.DESCRIPTION) {
+                  setIsEdittingDescription(false);
+                } else if (valueChangeType === valueChangeEnum.ALT) {
+                  setIsEdittingAltText(false);
+                }
+              }}
+            >
+              Withdraw
+            </button>
+          </React.Fragment>
+        )}
+      </div>
+    );
   };
-  //TODO: Làm một hàm tính ngày và thời gian để sử dụng chung ở đây
-  const toReadAbleDate = (dateString) => {
-    const splitInfo = dateString.slice(0, 10).split("-");
-    return splitInfo[2] + "/" + splitInfo[1] + "/" + splitInfo[0];
+
+  const inputRef = {
+    name: createRef(),
+    alt: createRef(),
+    description: createRef(),
   };
 
   useEffect(() => {
@@ -50,6 +124,10 @@ export default function ImagePreviewPane(props) {
     if (props.imageInfo?.ownPeople)
       getUserInformationByID(props.imageInfo?.ownPeople);
   }, [props.imageInfo?.ownPeople]);
+
+  useEffect(() => {
+    setIsEdittingName(false);
+  }, [props.imageInfo?._id]);
 
   // console.log("ownimageInfo", ownimageInfo);
   const getFatherAlbum = (fatherAlbums) => {
@@ -71,11 +149,88 @@ export default function ImagePreviewPane(props) {
       })
       .then((data) => {
         console.log("data", data);
+        if (data.data.success) {
+          toast.success("Delete image successfully");
+          dispatch(deleteAnImage(props.imageInfo?._id));
+        }
       })
       .catch((err) => {
         console.log("err", err);
       });
+    props.closePreviewPane();
     props.changeIndex(-1);
+  };
+
+  const changeValue = (valueChangeType) => {
+    let editValue = {};
+    if (valueChangeType === valueChangeEnum.NAME) {
+      const name = inputRef.name.current.value;
+      if (name === props.imageInfo?.imageName) {
+        toast.error("The name is not change");
+        return;
+      }
+      editValue.imageName = name;
+    } else if (valueChangeType === valueChangeEnum.DESCRIPTION) {
+      const description = inputRef.description.current.value;
+      if (description === props.imageInfo?.description) {
+        toast.error("The description is not change");
+        return;
+      }
+      editValue.description = description;
+    } else if (valueChangeType === valueChangeEnum.ALT) {
+      const alt = inputRef.alt.current.value;
+      if (alt === props.imageInfo?.alt) {
+        toast.error("The alt text is not change");
+        return;
+      }
+      editValue.alt = alt;
+    }
+    axios.defaults.withCredentials = true;
+    const url = "http://localhost:5000/api/image";
+    axios
+      .patch(url, {
+        id: props.imageInfo?._id,
+        ...editValue,
+      })
+      .then((data) => {
+        console.log("data", data);
+        if (data.data.success) {
+          if (valueChangeType === valueChangeEnum.NAME) {
+            toast.success("Change name successfully");
+            setIsEdittingName(false);
+          } else if (valueChangeType === valueChangeEnum.DESCRIPTION) {
+            toast.success("Change description successfully");
+            setIsEdittingDescription(false);
+          } else if (valueChangeType === valueChangeEnum.ALT) {
+            toast.success("Change alt text successfully");
+            setIsEdittingAltText(false);
+          }
+          dispatch(
+            changeAnImage({
+              id: props.imageInfo?._id,
+              value: editValue,
+            })
+          );
+        } else {
+          if (valueChangeType === valueChangeEnum.NAME) {
+            toast.success("Change name failed");
+          } else if (valueChangeType === valueChangeEnum.DESCRIPTION) {
+            toast.success("Change description failed");
+          } else if (valueChangeType === valueChangeEnum.ALT) {
+            toast.success("Change alt text failed");
+          }
+        }
+      })
+      .catch((err) => {
+        console.log("err", err);
+        if (valueChangeType === valueChangeEnum.NAME) {
+          toast.success("Change name failed");
+        } else if (valueChangeType === valueChangeEnum.DESCRIPTION) {
+          toast.success("Change description failed");
+        } else if (valueChangeType === valueChangeEnum.ALT) {
+          toast.success("Change alt text failed");
+        }
+      });
   };
 
   return (
@@ -98,7 +253,36 @@ export default function ImagePreviewPane(props) {
           <div className="divider"></div>
           <p className="information-concrete">
             <label className="information-label">ImageName:</label>
-            {props.imageInfo?.imageName ?? " Không xác định"}
+            {!isEdittingName ? (
+              <p>{props.imageInfo?.imageName ?? " Không xác định"}</p>
+            ) : (
+              <input
+                ref={inputRef.name}
+                defaultValue={props.imageInfo?.imageName}
+              ></input>
+            )}
+          </p>
+          <p className="information-concrete">
+            <label className="information-label">Description:</label>
+            {!isEdittingDescription ? (
+              <p>{props.imageInfo?.description ?? " Không xác định"}</p>
+            ) : (
+              <input
+                ref={inputRef.description}
+                defaultValue={props.imageInfo?.description}
+              ></input>
+            )}
+          </p>
+          <p className="information-concrete">
+            <label className="information-label">Alt text:</label>
+            {!isEdittingAltText ? (
+              <p>{props.imageInfo?.alt ?? " Không xác định"}</p>
+            ) : (
+              <input
+                ref={inputRef.alt}
+                defaultValue={props.imageInfo?.alt}
+              ></input>
+            )}
           </p>
         </section>
         <section className="information-attribute information-section">
@@ -109,10 +293,7 @@ export default function ImagePreviewPane(props) {
             <img className="own-avatar" src={ownimageInfo?.avatarURL}></img>
             <p className="own-username">{ownimageInfo?.username || ""}</p>
           </p>
-          <p className="information-concrete">
-            <label className="information-label">Description:</label>
-            {props.imageInfo?.description}
-          </p>
+
           <p className="information-concrete">
             <label className="information-label">Location:</label>
             {`${ownimageInfo?.username}/${getFatherAlbum(
@@ -153,10 +334,14 @@ export default function ImagePreviewPane(props) {
               SimpleView
             </Link>
           </p>
-          <p className="information-concrete delete">
-            <button onClick={() => deleteCurrentImage()}>Delete</button>
-            <button>Change name</button>
-          </p>
+          <div className="button-section">
+            <div>
+              <button onClick={() => deleteCurrentImage()}>Delete</button>
+            </div>
+            {buttonChangeGroupDOM(valueChangeEnum.NAME)}
+            {buttonChangeGroupDOM(valueChangeEnum.DESCRIPTION)}
+            {buttonChangeGroupDOM(valueChangeEnum.ALT)}
+          </div>
         </section>
       </div>
     </CSSTransition>

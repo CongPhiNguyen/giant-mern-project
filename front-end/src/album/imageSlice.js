@@ -5,6 +5,7 @@ const imageSlice = createSlice({
   name: "imageSlice",
   initialState: {
     uploadingImageInfo: [],
+    currentOwnImages: [],
   },
   reducers: {
     setLoadImageCount: (state, action) => {
@@ -40,10 +41,34 @@ const imageSlice = createSlice({
       let index = action.payload.index;
       state.uploadingImageInfo.splice(index, 1);
     },
+    setCurrentOwnImages: (state, action) => {
+      state.currentOwnImages = action.payload;
+    },
+    deleteAnImage: (state, action) => {
+      state.currentOwnImages = state.currentOwnImages.filter((value) => {
+        return value._id !== action.payload;
+      });
+    },
+    changeAnImage: (state, action) => {
+      state.currentOwnImages = state.currentOwnImages.map((imageInfo) => {
+        if (imageInfo._id === action.payload.id) {
+          return {
+            ...imageInfo,
+            ...action.payload.value,
+          };
+        } else return imageInfo;
+      });
+    },
   },
 });
 
-export const { setLoadImageCount, setUploadingImageInfo, removeOne } =
-  imageSlice.actions;
+export const {
+  setLoadImageCount,
+  setUploadingImageInfo,
+  removeOne,
+  setCurrentOwnImages,
+  deleteAnImage,
+  changeAnImage,
+} = imageSlice.actions;
 
 export default imageSlice.reducer;

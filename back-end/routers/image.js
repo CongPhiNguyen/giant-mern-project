@@ -37,6 +37,7 @@ router.get("/check-progress-upload", imageController.checkUploadProgress);
 router.get("/get-concrete-image", imageController.getConcreteImagebyPathName);
 router.get("/:user-root/:image-root", imageController.displayImage);
 
+router.patch("/", imageController.editImage);
 router.delete("/", imageController.deleteImage);
 
 module.exports = router;

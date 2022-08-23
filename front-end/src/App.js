@@ -1,29 +1,6 @@
-// import { useEffect } from "react";
-// import { ToastContainer } from "react-toastify";
-// import "react-toastify/dist/ReactToastify.css";
-
+import "react-toastify/dist/ReactToastify.css";
 import "./app.scss";
-
-// import Home from "./shared/pages/Home";
-// import Header from "./shared/components/Header";
-// import Login from "./authentication/pages/login";
-// import SignUp from "./authentication/pages/signup";
-// import NotFound from "./shared/pages/404";
-// import ImageViewing from "./album/pages/Image/ImageViewing";
-// import ImageControlling from "./album/pages/Image/ImageControlling";
-// import ImagesUploading from "./album/pages/Image/ImagesUploading";
-// import AlbumsViewing from "./album/pages/Album/AlbumsViewing";
-// import ImagesViewing from "./album/pages/Image/ImagesViewing";
-
-// import {
-//   BrowserRouter as Router,
-//   Route,
-//   Routes,
-//   Navigate,
-// } from "react-router-dom";
-// import AbstractModal from "./shared/modals/AbstractModal";
-// import SimpleImageViewing from "./album/pages/Image/SimpleImageViewing";
-
+import { ToastContainer } from "react-toastify";
 import React from "react";
 import { BrowserRouter } from "react-router-dom";
 import Routers from "./routers";
@@ -44,6 +21,7 @@ function App() {
         </div>
         <AbstractModal />
       </div>
+      <ToastContainer />
     </BrowserRouter>
   );
 }

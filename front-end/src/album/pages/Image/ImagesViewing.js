@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import "./ImagesViewing.scss";
 
 import axios from "axios";
@@ -10,12 +10,19 @@ import ImagePreviewPane from "../../components/Image/ImagePreviewPane";
 import ImageGroupDisplayer from "../../components/Image/ImageGroupDisplayer";
 import ViewHeading from "../../shared/components/ViewHeading";
 
+// Redux
+import { setCurrentOwnImages } from "../../imageSlice";
+
 export default function ImagesViewing() {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const [imagesInfo, setImagesInfo] = useState([]);
   const [isDisplayPreviewPane, setDisplayPreviewPane] = useState(false);
   const [imagesSelectedIndex, setImagesSelectedIndex] = useState(-1);
+
+  const currentOwnImages = useSelector(
+    (state) => state.imageSlice.currentOwnImages
+  );
 
   const userInfo = useSelector(
     (state) => state.sharedSlice.currentUserInformation
@@ -30,7 +37,7 @@ export default function ImagesViewing() {
         )
         .then((data) => {
           console.log("data", data);
-          setImagesInfo(data.data.imageInfo);
+          dispatch(setCurrentOwnImages(data.data.imageInfo));
         })
         .catch((err) => {
           console.log("err", err);
@@ -73,10 +80,7 @@ export default function ImagesViewing() {
               setDisplayPreviewPane(false);
             }}
           >
-            {/* {imagesInfo?.length > 2 && (
-              <ImageGroupDisplayer listImage={imagesInfo} />
-            )} */}
-            {imagesInfo.map((value, index) => (
+            {currentOwnImages.map((value, index) => (
               <div
                 onClick={(e) => {
                   e.stopPropagation();
@@ -96,7 +100,7 @@ export default function ImagesViewing() {
       <ImagePreviewPane
         closePreviewPane={closePreviewPane}
         display={isDisplayPreviewPane}
-        imageInfo={imagesInfo[imagesSelectedIndex]}
+        imageInfo={currentOwnImages[imagesSelectedIndex]}
         changeIndex={changeCurrrentIndex}
       />
     </div>

@@ -295,5 +295,32 @@ class imageController {
       });
     });
   };
+
+  editImage = async (req, res) => {
+    console.log(req.body);
+    console.log(req.cookies);
+
+    let editInfo = {};
+    if (req.body.imageName) {
+      editInfo.imageName = req.body.imageName;
+    }
+    if (req.body.description) {
+      editInfo.description = req.body.description;
+    }
+    if (req.body.alt) {
+      editInfo.alt = req.body.alt;
+    }
+    image
+      .findByIdAndUpdate(req.body.id, editInfo)
+      .then((data) => {
+        res.status(200).send({ success: true });
+      })
+      .catch((err) => {
+        res.status(204).send({
+          err: err.message,
+          message: "Error when changing image information",
+        });
+      });
+  };
 }
 module.exports = new imageController();

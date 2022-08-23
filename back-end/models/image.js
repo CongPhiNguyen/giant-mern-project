@@ -10,6 +10,7 @@ const imageSchema = new Schema(
     ownPeople: { type: mongoose.Schema.Types.ObjectId, ref: "albums" },
     fatherAlbums: [{ type: mongoose.Schema.Types.ObjectId, ref: "albums" }],
     description: { type: "string" },
+    alt: { type: "string" },
     storage: { type: "number", default: 0 },
     dimension: {
       x: { type: "number", default: 0 },
