@@ -185,7 +185,6 @@ function Login() {
     <div className="app-1-container">
       <div className="login-container">
         <h1 className="login-title">LOGIN</h1>
-
         {/* input */}
         <div className="input-container">
           <label htmlFor="username" className="input-title">

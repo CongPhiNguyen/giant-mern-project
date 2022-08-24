@@ -7,13 +7,15 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { Line } from "rc-progress";
 
-import UploadingProgress from "./UploadingProgress";
 import ImageInfo from "./Uploading/ImageInfo";
 import { setLoadImageCount, setUploadingImageInfo } from "../../imageSlice";
 import { useDispatch } from "react-redux";
 
+import { useNavigate } from "react-router-dom";
+
 export default function UploadingBox() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [listImage, setListImage] = useState([]);
   const [listImageData, setListImageData] = useState([]);
@@ -26,11 +28,6 @@ export default function UploadingBox() {
 
   const [percentUpload, setPercentUpload] = useState(0);
 
-  // Processing
-  const [serverProcessing, setServerProcessing] = useState([]);
-  const [processID, setProcessID] = useState("");
-
-  let checkingProcessInterval;
   const userInfo = useSelector(
     (state) => state.sharedSlice.currentUserInformation
   );
@@ -109,10 +106,7 @@ export default function UploadingBox() {
       .post(url, uploadImagesData, config)
       .then((data) => {
         console.log("data", data);
-        setProcessID(data.data.currentUploadProcess.id);
-        checkingProcessInterval = setInterval(() => {
-          callCheckProgress(data.data.currentUploadProcess.id);
-        }, 1000);
+        navigate("/processing");
       })
       .catch((err) => {
         console.log("err", err);
@@ -141,25 +135,6 @@ export default function UploadingBox() {
 
     // Call api send images
     callAPISendImages(uploadImagesData);
-  };
-
-  const callCheckProgress = (processID) => {
-    axios
-      .get(
-        "http://localhost:5000/api/image/check-progress-upload",
-        { params: { processID: processID } },
-        { withCredentials: true }
-      )
-      .then((data) => {
-        if (
-          data.data.currentProcess.img.every((value) => value != "uploaded")
-        ) {
-          clearInterval(checkingProcessInterval);
-        }
-      })
-      .catch((err) => {
-        console.log("err", err);
-      });
   };
 
   const deleteCurrentImageFromQueue = (removeIndex) => {
@@ -215,13 +190,6 @@ export default function UploadingBox() {
 
   return (
     <React.Fragment>
-      {listImage?.length > 0 && (
-        <UploadingProgress
-          listImage={listImage}
-          listImageData={listImageData}
-          serverProcessing={serverProcessing}
-        />
-      )}
       <div className="uploading-box-container">
         <div className="percent-upload">
           {" "}

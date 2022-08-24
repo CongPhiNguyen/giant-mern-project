@@ -6,6 +6,7 @@ const imageSlice = createSlice({
   initialState: {
     uploadingImageInfo: [],
     currentOwnImages: [],
+    processingImagesInfo: [],
   },
   reducers: {
     setLoadImageCount: (state, action) => {
@@ -59,6 +60,9 @@ const imageSlice = createSlice({
         } else return imageInfo;
       });
     },
+    setProcessingImages: (state, action) => {
+      state.processingImagesInfo = action.payload;
+    },
   },
 });
 
@@ -69,6 +73,7 @@ export const {
   setCurrentOwnImages,
   deleteAnImage,
   changeAnImage,
+  setProcessingImages,
 } = imageSlice.actions;
 
 export default imageSlice.reducer;

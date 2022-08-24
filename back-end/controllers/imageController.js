@@ -6,6 +6,8 @@ const { v4: uuidv4 } = require("uuid");
 
 const user = require("../models/user");
 const image = require("../models/image");
+const process = require("../models/proccess");
+
 let imageUploadingProgress = [];
 const createDZIFromBuffer = require("../utilities/CreateDZI");
 // const multipleUploadMiddleware = require("../middleware/uploadMultipleImage");
@@ -90,9 +92,7 @@ class imageController {
         }
       }
     }
-    // console.log(listIDFileSaved);
     const currentListFile = ownUser.ownImages;
-    // console.log([...currentListFile, ...listIDFileSaved]);
     await user
       .findByIdAndUpdate(req.body.userID, {
         ownImages: [...currentListFile, ...listIDFileSaved],
@@ -104,6 +104,7 @@ class imageController {
         //TODO: Rollback added image
         console.log("err", err);
       });
+
     let currentUploadProcess = {};
     for (let i = 0; i < imageUploadingProgress.length; i++) {
       if (imageUploadingProgress[i].id == processID)
@@ -114,40 +115,143 @@ class imageController {
       .status(200)
       .send({ run: true, currentUploadProcess: currentUploadProcess });
 
-    req.files.forEach((file, index) => {
-      try {
-        createDZIFromBuffer(
-          file.buffer,
-          __dirname + `/../privates/${ownUser.userRoot}/`,
-          `${fileNameList[index]}`,
-          () => {
-            for (let i = 0; i < imageUploadingProgress.length; i++) {
-              if (imageUploadingProgress[i].id === processID) {
-                imageUploadingProgress[i].img[index] = "deepzoom created";
+    const listIDAndBool = listIDFileSaved.map((value) => {
+      return { id: value, state: false };
+    });
+
+    // Create process in the database
+    const newProcess = new process({
+      userID: req.body.userID,
+      imageInfoIDs: listIDAndBool,
+      state: "running",
+      uuid: processID,
+    });
+
+    let databaseProcessID;
+    const finishProcessDatabase = () => {
+      process
+        .findByIdAndUpdate(databaseProcessID, { state: "processed" })
+        .then((data) => {
+          console.log(data);
+        })
+        .catch((err) => {});
+    };
+    const updateImageProcess = () => {
+      req.files.forEach((file, index) => {
+        try {
+          createDZIFromBuffer(
+            file.buffer,
+            __dirname + `/../privates/${ownUser.userRoot}/`,
+            `${fileNameList[index]}`,
+            () => {
+              const updateProcess = () => {
+                process
+                  .findByIdAndUpdate(
+                    databaseProcessID,
+                    {
+                      $set: {
+                        "imageInfoIDs.$[imageInfoID].state": true,
+                      },
+                    },
+                    {
+                      arrayFilters: [
+                        { "imageInfoID.id": listIDFileSaved[index] },
+                      ],
+                    }
+                  )
+                  .then((data) => {
+                    console.log(data);
+                  })
+                  .catch((er) => {
+                    console.log(er);
+                  });
+              };
+              // Cập nhật thành công thay đổi database
+              updateProcess();
+              for (let i = 0; i < imageUploadingProgress.length; i++) {
+                if (imageUploadingProgress[i].id === processID) {
+                  imageUploadingProgress[i].img[index] = "deepzoom created";
+                }
+                if (
+                  imageUploadingProgress[i].img.every(
+                    (value) =>
+                      value === "deepzoom created" ||
+                      value === "deepzoom created failed"
+                  )
+                ) {
+                  finishProcessDatabase();
+                }
+                console.log(imageUploadingProgress[i].img);
+              }
+            }
+          );
+        } catch (err) {
+          const updateProcess = () => {
+            process
+              .findByIdAndUpdate(
+                databaseProcessID,
+                {
+                  $set: {
+                    "imageInfoIDs.$[imageInfoID].state": true,
+                  },
+                },
+                {
+                  arrayFilters: [{ "imageInfoID.id": listIDFileSaved[index] }],
+                }
+              )
+              .then((data) => {
+                console.log(data);
+              })
+              .catch((er) => {
+                console.log(er);
+              });
+          };
+          // Cập nhật thành công thay đổi database
+          updateProcess();
+          for (let i = 0; i < imageUploadingProgress.length; i++) {
+            if (imageUploadingProgress[i].id === processID) {
+              imageUploadingProgress[i].img[index] = "deepzoom created failed";
+              if (
+                imageUploadingProgress[i].img.every(
+                  (value) =>
+                    value === "deepzoom created" ||
+                    value === "deepzoom created failed"
+                )
+              ) {
+                finishProcessDatabase();
               }
             }
           }
-        );
-      } catch (err) {
-        for (let i = 0; i < imageUploadingProgress.length; i++) {
-          if (imageUploadingProgress[i].id === processID) {
-            imageUploadingProgress[i].img[index] = "deepzoom created failed";
-          }
         }
-      }
-    });
+      });
+    };
+    await newProcess
+      .save()
+      .then((data) => {
+        databaseProcessID = data._id;
+        updateImageProcess();
+      })
+      .catch((err) => {});
   };
 
   checkUploadProgress = async (req, res) => {
-    console.log("req.query", req.query);
-    console.log(imageUploadingProgress);
-    let currentProcess;
-    imageUploadingProgress.forEach((value) => {
-      if (value.id == req.query.processID) {
-        currentProcess = value;
-      }
-    });
-    res.status(200).send({ run: true, currentProcess: currentProcess });
+    // console.log("req.query", req.query);
+    // console.log(imageUploadingProgress)
+
+    // database
+    process
+      .find({ userID: req.query.userID })
+      .populate("imageInfoIDs.id")
+      .then((data) => {
+        res.status(200).send({ success: true, data: data });
+      })
+      .catch((err) => {
+        res.status(200).send({
+          success: false,
+          err: err,
+          message: err.message,
+        });
+      });
   };
 
   displayImage = async (req, res) => {
