@@ -2,10 +2,9 @@ import React from "react";
 import "./ControllBar.scss";
 
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 export default function ControllBar() {
-  const navigate = useNavigate();
   const userInfo = useSelector(
     (state) => state.sharedSlice.currentUserInformation
   );
@@ -14,7 +13,7 @@ export default function ControllBar() {
   return (
     <div
       className={
-        userInfo && Object.keys(userInfo).length != 0
+        userInfo && Object.keys(userInfo).length !== 0
           ? "controll-bar"
           : "controll-bar hidden"
       }
@@ -22,31 +21,15 @@ export default function ControllBar() {
       <section className="content-section">
         <p className="title">My own</p>
         <div className="divider"></div>
-        <p
-          className="content-item"
-          onClick={() => {
-            navigate("/image/view-all-image");
-          }}
-        >
+        <NavLink to="/image/view-all-image" className="content-item">
           Images
-        </p>
-        <p
-          className="content-item"
-          onClick={() => {
-            navigate("/album");
-          }}
-        >
+        </NavLink>
+        <NavLink to="/album" className="content-item">
           Albums
-        </p>
-        <p
-          className="content-item"
-          onClick={() => {
-            navigate("/processing");
-          }}
-        >
-          {/* TODO: Cập nhật % ở đây và hiện lên khi đang upload */}
+        </NavLink>
+        <NavLink to="/processing" className="content-item">
           Processing
-        </p>
+        </NavLink>
       </section>
       <section className="content-section">
         <p className="title">Received</p>

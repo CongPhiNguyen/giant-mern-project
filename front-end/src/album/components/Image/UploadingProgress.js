@@ -21,17 +21,19 @@ export default function UploadingProgress(props) {
       <p>Start time: {toReadAbleDateTime(uploadingInfo.createdAt)} </p>
       <p>End time: {toReadAbleDateTime(uploadingInfo.updatedAt)} </p>
       {uploadingInfo.imageInfoIDs.map((imageData, index) => {
-        console.log(imageData);
+        console.log(imageData.id?.imageRoot);
         return (
           <div className="img-progress-container" key={index}>
             <img
-              src={renderLinkImage(imageData.id.imageRoot)}
+              src={renderLinkImage(imageData.id?.imageRoot)}
               className="img-uploading"
-              alt={imageData.id.alt}
+              alt={imageData.id?.alt}
             ></img>
-            <p className="image-title">{imageData.id.imageName}</p>
+            <p className="image-title">
+              {imageData.id?.imageName || "Deleted"}
+            </p>
             <p className="progress">
-              {imageData.state ? "Uploaded" : "Uploading...."}
+              {imageData?.state ? "Uploaded" : "Uploading...."}
             </p>
             <p className="progress">View more</p>
           </div>

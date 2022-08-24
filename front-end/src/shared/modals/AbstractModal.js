@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import { CSSTransition } from "react-transition-group";
 
 import AddNewAlbum from "./AddNewAlbum";
+import ImagePermission from "./ImagePermission";
 
 export default function AbstractModal() {
   const dispatch = useDispatch();
@@ -20,6 +21,8 @@ export default function AbstractModal() {
     switch (modalName) {
       case "Add new album":
         return <AddNewAlbum></AddNewAlbum>;
+      case "ImagePermission":
+        return <ImagePermission></ImagePermission>;
       default:
         return null;
     }

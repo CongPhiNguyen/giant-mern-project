@@ -14,12 +14,11 @@ export default function ViewHeadingImage() {
     (state) => state.sharedSlice.currentUserInformation
   );
 
-  const searchInfo = useSelector((state) => state.imageSlice.search);
   const searchBoxRef = createRef();
   const fromDate = createRef();
   const toDate = createRef();
 
-  const searchForName = () => {
+  const searchForValue = () => {
     axios.defaults.withCredentials = true;
     const url = "http://localhost:5000/api/image/own/search";
     const paramToSearch = { userID: userInfo._id };
@@ -56,11 +55,14 @@ export default function ViewHeadingImage() {
   };
 
   useEffect(() => {
-    setToSearchImage({
-      isSearching: false,
-      module: "",
-      searchValue: [],
-    });
+    dispatch(
+      setToSearchImage({
+        isSearching: false,
+        module: "",
+        searchValue: [],
+      })
+    );
+    //eslint-disable-next-line
   }, []);
 
   const navigateToUpload = () => {
@@ -69,7 +71,7 @@ export default function ViewHeadingImage() {
   return (
     <div className="view-heading-app-container">
       <div className="search-bar">
-        {searchOption == "date" ? (
+        {searchOption === "date" ? (
           <div>
             <p>From date:</p>
             <input type="date" ref={fromDate} defaultValue={new Date()} />
@@ -96,7 +98,7 @@ export default function ViewHeadingImage() {
         <button
           className="search"
           onClick={() => {
-            searchForName();
+            searchForValue();
           }}
         >
           Search

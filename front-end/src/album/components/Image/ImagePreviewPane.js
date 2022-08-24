@@ -8,6 +8,7 @@ import { NavLink } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { changeAnImage, deleteAnImage } from "../../imageSlice";
 import { toast } from "react-toastify";
+import { showModal } from "../../../shared/modals/ModalSlice";
 
 const valueChangeEnum = {
   NAME: "NAME",
@@ -210,6 +211,10 @@ export default function ImagePreviewPane(props) {
       });
   };
 
+  const changePermission = () => {
+    dispatch(showModal("ImagePermission"));
+  };
+
   return (
     <CSSTransition
       in={props.display}
@@ -294,6 +299,7 @@ export default function ImagePreviewPane(props) {
             {props.imageInfo?.viewedPeople.length +
               " people viewed this album" ?? ""}
           </p>
+          <button onClick={() => changePermission()}>Change permission</button>
         </section>
         <section className="information-mangage information-section">
           <p className="title">Manage</p>

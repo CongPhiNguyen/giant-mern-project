@@ -3,6 +3,7 @@
   padding: 1em;
   &.selected {
     border: 2px dashed pink;
+    background-color: pink;
   }
   .image-container {
     .image-concrete {

@@ -9,6 +9,7 @@ export default function ImageViewing() {
   const params = useParams();
   const [viewer1, setViewer1] = useState();
   const [imgInfo, setImgInfo] = useState({});
+  const [havePermission, setHavePermission] = useState(false);
   useEffect(() => {
     const getImageInfo = () => {
       axios.defaults.withCredentials = true;
@@ -21,9 +22,14 @@ export default function ImageViewing() {
         })
         .then((data) => {
           console.log("data", data);
-          setImgInfo(data.data.imgInfo);
+
+          if (data.data.imgInfo) {
+            setHavePermission(true);
+            setImgInfo(data.data.imgInfo);
+          } else setHavePermission(false);
         })
         .catch((err) => {
+          setHavePermission(false);
           console.log("err", err);
         });
     };
@@ -60,7 +66,16 @@ export default function ImageViewing() {
   console.log(params);
   return (
     <div>
-      <div id="slide1" style={{ width: "100%", height: "80vh" }}></div>
+      {!havePermission ? (
+        <p>You don't have permission to access this file</p>
+      ) : (
+        <div
+          id="slide1"
+          style={{ width: "100%", height: "80vh", border: "1px solid #333" }}
+        ></div>
+      )}
+
+      {/* {noPermission ? <></>} */}
     </div>
   );
 }

@@ -3,7 +3,9 @@ const path = require("path");
 const sharp = require("sharp");
 const fs = require("fs");
 const { v4: uuidv4 } = require("uuid");
+const jwt = require("jsonwebtoken");
 
+const JWT_SECRET = "congphi";
 const user = require("../models/user");
 const image = require("../models/image");
 const process = require("../models/proccess");
@@ -250,7 +252,6 @@ class imageController {
     // console.log(req.url);
     const [dirName, fileName] = req.url.slice(1).split("/");
     // console.log(__dirname + `../privates/${dir}`);
-
     let options = {
       root: dirName + `/../privates/${dirName}`,
     };
@@ -269,6 +270,7 @@ class imageController {
   displayDeeepZoomImage = async (req, res) => {
     // console.log(req.url);
     // console.log(req.params);
+    // console.log(req.cookies);
     const [dirName, fileName] = req.url.slice(1).split("/");
     // console.log(__dirname + `../privates/${dir}`);
 
@@ -301,20 +303,39 @@ class imageController {
   };
 
   getConcreteImagebyPathName = async (req, res) => {
-    console.log("req.query", req.query);
-    const imgData = await image.findOne({
-      imageRoot: [req.query.userID, req.query.imgID],
-    });
-    if (!imgData) {
-      res.status(201).send({ find: false });
-    } else {
-      res.status(201).send({
-        find: true,
-        imgInfo: {
-          ...imgData._doc,
-        },
+    const verifyUser = (nextFunction) => {
+      jwt.verify(req.cookies._jwt, JWT_SECRET, function (err, decoded) {
+        if (err) {
+          console.log(err);
+          res.status(200).send({ success: false, err: err.message });
+        }
+        console.log(decoded);
+        if (decoded.userID) {
+          nextFunction(decoded.userID);
+        }
       });
-    }
+    };
+    const checkPermitAndSendInfor = (userID) => {
+      image
+        .findOne({
+          imageRoot: [req.query.userID, req.query.imgID],
+          $or: [{ ownPeople: userID }, { sharedPeople: userID }],
+        })
+        .then((data) => {
+          // console.log(data);
+          res.status(201).send({
+            success: true,
+            find: true,
+            imgInfo: data,
+          });
+        })
+        .catch((err) => {
+          res.status(201).send({ sucess: false, find: false });
+        });
+    };
+    verifyUser((userID) => {
+      checkPermitAndSendInfor(userID);
+    });
   };
 
   deleteImage = async (req, res) => {
