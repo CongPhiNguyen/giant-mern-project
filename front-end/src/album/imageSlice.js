@@ -7,6 +7,11 @@ const imageSlice = createSlice({
     uploadingImageInfo: [],
     currentOwnImages: [],
     processingImagesInfo: [],
+    search: {
+      isSearching: false,
+      module: "",
+      searchValue: [],
+    },
   },
   reducers: {
     setLoadImageCount: (state, action) => {
@@ -49,6 +54,10 @@ const imageSlice = createSlice({
       state.currentOwnImages = state.currentOwnImages.filter((value) => {
         return value._id !== action.payload;
       });
+      state.search.searchValue = state.search.searchValue.filter((value) => {
+        return value._id !== action.payload;
+      });
+      //TODO Delete in search too
     },
     changeAnImage: (state, action) => {
       state.currentOwnImages = state.currentOwnImages.map((imageInfo) => {
@@ -59,9 +68,21 @@ const imageSlice = createSlice({
           };
         } else return imageInfo;
       });
+      state.search.searchValue = state.search.searchValue.map((imageInfo) => {
+        if (imageInfo._id === action.payload.id) {
+          return {
+            ...imageInfo,
+            ...action.payload.value,
+          };
+        } else return imageInfo;
+      });
+      //TODO Change in search too
     },
     setProcessingImages: (state, action) => {
       state.processingImagesInfo = action.payload;
+    },
+    setToSearchImage: (state, action) => {
+      state.search = action.payload;
     },
   },
 });
@@ -74,6 +95,7 @@ export const {
   deleteAnImage,
   changeAnImage,
   setProcessingImages,
+  setToSearchImage,
 } = imageSlice.actions;
 
 export default imageSlice.reducer;

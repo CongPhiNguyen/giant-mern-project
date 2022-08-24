@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import ImageDisplayer from "../../components/Image/ImageDisplayer";
 import ImagePreviewPane from "../../components/Image/ImagePreviewPane";
 import ImageGroupDisplayer from "../../components/Image/ImageGroupDisplayer";
-import ViewHeading from "../../shared/components/ViewHeading";
+import ViewHeadingImage from "../../components/Image/Search/ViewHeadingImage";
 
 // Redux
 import { setCurrentOwnImages } from "../../imageSlice";
@@ -27,6 +27,9 @@ export default function ImagesViewing() {
   const userInfo = useSelector(
     (state) => state.sharedSlice.currentUserInformation
   );
+
+  const searchInfo = useSelector((state) => state.imageSlice.search);
+
   useEffect(() => {
     const getAllUserOwnImage = () => {
       axios
@@ -52,10 +55,6 @@ export default function ImagesViewing() {
 
   // console.log("userInfo", userInfo);
 
-  const navigateToUpload = () => {
-    navigate("/image/upload");
-  };
-
   const changeCurrrentIndex = (index) => {
     setImagesSelectedIndex(index);
   };
@@ -64,13 +63,7 @@ export default function ImagesViewing() {
     <div style={{ display: "flex" }}>
       <div className="page-container">
         <div className="view-heading-container">
-          <ViewHeading
-            buttonAdd={
-              <button className="add-new" onClick={navigateToUpload}>
-                Upload Image
-              </button>
-            }
-          />
+          <ViewHeadingImage></ViewHeadingImage>
         </div>
         <div className="content-container">
           <div
@@ -80,7 +73,10 @@ export default function ImagesViewing() {
               setDisplayPreviewPane(false);
             }}
           >
-            {currentOwnImages.map((value, index) => (
+            {(searchInfo.isSearching && searchInfo.module == "ownImage"
+              ? searchInfo.searchValue
+              : currentOwnImages
+            ).map((value, index) => (
               <div
                 onClick={(e) => {
                   e.stopPropagation();
@@ -100,7 +96,11 @@ export default function ImagesViewing() {
       <ImagePreviewPane
         closePreviewPane={closePreviewPane}
         display={isDisplayPreviewPane}
-        imageInfo={currentOwnImages[imagesSelectedIndex]}
+        imageInfo={
+          searchInfo.isSearching && searchInfo.module == "ownImage"
+            ? searchInfo.searchValue[imagesSelectedIndex]
+            : currentOwnImages[imagesSelectedIndex]
+        }
         changeIndex={changeCurrrentIndex}
       />
     </div>

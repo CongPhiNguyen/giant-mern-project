@@ -36,6 +36,7 @@ router.get("/get-all-own-images", imageController.getAllOwnImage);
 router.get("/check-progress-upload", imageController.checkUploadProgress);
 router.get("/get-concrete-image", imageController.getConcreteImagebyPathName);
 router.get("/:user-root/:image-root", imageController.displayImage);
+router.get("/own/search", imageController.searchOwnImage);
 
 router.patch("/", imageController.editImage);
 router.delete("/", imageController.deleteImage);

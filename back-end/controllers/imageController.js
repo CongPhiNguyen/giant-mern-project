@@ -16,8 +16,6 @@ const baseFilePath = __dirname + "/../privates/";
 
 class imageController {
   uploadImages = async (req, res) => {
-    console.log("req.err", req.err);
-    console.log("req.body", req.body);
     //Get user root
     const ownUser = await user.findById(req.body.userID);
     if (ownUser === null) {
@@ -76,19 +74,13 @@ class imageController {
           })
             .save()
             .then((data) => {
-              // console.log(data._id);
               listIDFileSaved.push(data._id);
             })
-            .catch((err) => {
-              console.log("err", err);
-            });
+            .catch((err) => {});
           addNewUploadInfor("uploaded");
           console.log(imageUploadingProgress);
-          // console.log("aaa");
-          // imageUploadingProgress.[processID].push("uploaded");
         } catch (err) {
           addNewUploadInfor("failed to uploaded");
-          // imageUploadingProgress.[processID].push("failed to uploaded");
         }
       }
     }
@@ -110,7 +102,7 @@ class imageController {
       if (imageUploadingProgress[i].id == processID)
         currentUploadProcess = imageUploadingProgress[i];
     }
-    console.log(currentUploadProcess);
+    // console.log(currentUploadProcess);
     res
       .status(200)
       .send({ run: true, currentUploadProcess: currentUploadProcess });
@@ -132,7 +124,7 @@ class imageController {
       process
         .findByIdAndUpdate(databaseProcessID, { state: "processed" })
         .then((data) => {
-          console.log(data);
+          // console.log(data);
         })
         .catch((err) => {});
     };
@@ -160,7 +152,7 @@ class imageController {
                     }
                   )
                   .then((data) => {
-                    console.log(data);
+                    // console.log(data);
                   })
                   .catch((er) => {
                     console.log(er);
@@ -181,7 +173,7 @@ class imageController {
                 ) {
                   finishProcessDatabase();
                 }
-                console.log(imageUploadingProgress[i].img);
+                // console.log(imageUploadingProgress[i].img);
               }
             }
           );
@@ -200,7 +192,7 @@ class imageController {
                 }
               )
               .then((data) => {
-                console.log(data);
+                // console.log(data);
               })
               .catch((er) => {
                 console.log(er);
@@ -424,6 +416,34 @@ class imageController {
           err: err.message,
           message: "Error when changing image information",
         });
+      });
+  };
+
+  searchOwnImage = async (req, res) => {
+    console.log(req.query);
+    let searchInfo = { ownPeople: req.query.userID };
+    if (req.query.namePattern) {
+      searchInfo.imageName = { $regex: req.query.namePattern };
+    }
+    if (req.query.altPattern) {
+      searchInfo.alt = { $regex: req.query.altPattern };
+    }
+    if (req.query.descriptionPattern) {
+      searchInfo.description = { $regex: req.query.descriptionPattern };
+    }
+    if (req.query.fromDate) {
+      searchInfo.createdAt = {
+        $gte: new Date(req.query.fromDate),
+        $lt: new Date(req.query.toDate),
+      };
+    }
+    await image
+      .find(searchInfo)
+      .then((data) => {
+        res.status(200).send({ success: true, data: data });
+      })
+      .catch((err) => {
+        res.status(201).send({ success: false, err: err.message });
       });
   };
 }
