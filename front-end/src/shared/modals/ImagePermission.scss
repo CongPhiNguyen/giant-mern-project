@@ -1,0 +1,63 @@
+.modal-concrete-container {
+  .title {
+    border-bottom: 1px solid #333;
+    padding-bottom: 0.4em;
+    text-transform: uppercase;
+    font-weight: 700;
+    font-size: 1.8em;
+    text-align: center;
+  }
+  .tab-controll-container {
+    display: flex;
+    list-style: none;
+    .tab-controll-concrete {
+      list-style: none;
+      font-size: 1.2em;
+      padding: 0.4em 0.8em;
+      &:hover {
+        color: var(--secondary-color);
+        cursor: pointer;
+      }
+      &.active {
+        color: var(--secondary-color);
+      }
+    }
+  }
+  .tab-container {
+    display: flex;
+    list-style: none;
+    gap: 2em;
+    .tab-concrete {
+      border: 1px solid #333;
+      flex: 1;
+      .sub-title {
+      }
+      .search {
+        .search-box {
+        }
+        .search-sellect {
+        }
+      }
+      .found-user {
+        .user-info-box {
+          border: 1px solid #333;
+          display: flex;
+          gap: 1em;
+          align-items: center;
+          .avatar-container {
+            .avatar-img {
+              width: 4em;
+              height: 4em;
+              border-radius: 100%;
+            }
+          }
+          .infor {
+          }
+          .add-permission {
+            // width: 2em;
+          }
+        }
+      }
+    }
+  }
+}

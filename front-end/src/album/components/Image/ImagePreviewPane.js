@@ -6,7 +6,11 @@ import axios from "axios";
 import { CSSTransition } from "react-transition-group";
 import { NavLink } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { changeAnImage, deleteAnImage } from "../../imageSlice";
+import {
+  changeAnImage,
+  deleteAnImage,
+  setCurrentSharedInfo,
+} from "../../imageSlice";
 import { toast } from "react-toastify";
 import { showModal } from "../../../shared/modals/ModalSlice";
 
@@ -213,6 +217,7 @@ export default function ImagePreviewPane(props) {
 
   const changePermission = () => {
     dispatch(showModal("ImagePermission"));
+    dispatch(setCurrentSharedInfo(props.imageInfo));
   };
 
   return (

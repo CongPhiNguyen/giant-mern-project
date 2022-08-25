@@ -5,13 +5,13 @@ import "./ImagesViewing.scss";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-import ImageDisplayer from "../../components/Image/ImageDisplayer";
-import ImagePreviewPane from "../../components/Image/ImagePreviewPane";
-import ImageGroupDisplayer from "../../components/Image/ImageGroupDisplayer";
-import ViewHeadingImage from "../../components/Image/Search/ViewHeadingImage";
+import ImageDisplayer from "../../../components/Image/ViewImage/ImageDisplayer";
+import ImagePreviewPane from "../../../components/Image/ImagePreviewPane";
+import ImageGroupDisplayer from "../../../components/Image/ImageGroupDisplayer";
+import ViewHeadingImage from "../../../components/Image/Search/ViewHeadingImage";
 
 // Redux
-import { setCurrentOwnImages } from "../../imageSlice";
+import { setCurrentOwnImages } from "../../../imageSlice";
 
 export default function ImagesViewing() {
   const dispatch = useDispatch();

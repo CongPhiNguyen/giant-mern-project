@@ -12,6 +12,8 @@ const imageSlice = createSlice({
       module: "",
       searchValue: [],
     },
+    currentSharedImageInfo: {},
+    currentReceivedImages: [],
   },
   reducers: {
     setLoadImageCount: (state, action) => {
@@ -84,6 +86,12 @@ const imageSlice = createSlice({
     setToSearchImage: (state, action) => {
       state.search = action.payload;
     },
+    setCurrentSharedInfo: (state, action) => {
+      state.currentSharedImageInfo = action.payload;
+    },
+    setCurrentReceivedImages: (state, action) => {
+      state.currentReceivedImages = action.payload;
+    },
   },
 });
 
@@ -96,6 +104,8 @@ export const {
   changeAnImage,
   setProcessingImages,
   setToSearchImage,
+  setCurrentSharedInfo,
+  setCurrentReceivedImages,
 } = imageSlice.actions;
 
 export default imageSlice.reducer;

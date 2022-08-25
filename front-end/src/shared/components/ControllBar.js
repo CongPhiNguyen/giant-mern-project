@@ -3,6 +3,7 @@ import "./ControllBar.scss";
 
 import { useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
+import { convertFileSizeToString } from "../../utilities/fileSize";
 
 export default function ControllBar() {
   const userInfo = useSelector(
@@ -22,10 +23,10 @@ export default function ControllBar() {
         <p className="title">My own</p>
         <div className="divider"></div>
         <NavLink to="/image/view-all-image" className="content-item">
-          Images
+          Images({userInfo.ownImages?.length})
         </NavLink>
         <NavLink to="/album" className="content-item">
-          Albums
+          Albums({userInfo.ownAlbums?.length})
         </NavLink>
         <NavLink to="/processing" className="content-item">
           Processing
@@ -34,8 +35,18 @@ export default function ControllBar() {
       <section className="content-section">
         <p className="title">Received</p>
         <div className="divider"></div>
-        <p className="content-item">Images</p>
+        <NavLink to="/image/view-all-revceived-image" className="content-item">
+          Image
+        </NavLink>
         <p className="content-item">Albums</p>
+      </section>
+      <section className="content-section storage">
+        <p className="title">Storage</p>
+        <div className="divider">
+          <p className="content-item">
+            Storage: {convertFileSizeToString(userInfo.storage)}/2 GB
+          </p>
+        </div>
       </section>
     </div>
   );

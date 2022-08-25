@@ -1,11 +1,12 @@
 import React from "react";
+import ViewReceivedImages from "../album/pages/Image/ViewImage/ViewReceivedImages";
 
 const SignUp = React.lazy(() => import("../authentication/pages/signup"));
 const Login = React.lazy(() => import("../authentication/pages/login"));
 
 const Home = React.lazy(() => import("../shared/pages/Home"));
 const ImageViewing = React.lazy(() =>
-  import("../album/pages/Image/ImageViewing")
+  import("../album/pages/Image/ViewImage/ImageViewing")
 );
 const ImagesUploading = React.lazy(() =>
   import("../album/pages/Image/ImagesUploading")
@@ -14,7 +15,7 @@ const AlbumsViewing = React.lazy(() =>
   import("../album/pages/Album/AlbumsViewing")
 );
 const ImagesViewing = React.lazy(() =>
-  import("../album/pages/Image/ImagesViewing")
+  import("../album/pages/Image/ViewImage/ImagesViewing")
 );
 const SimpleImageViewing = React.lazy(() =>
   import("../album/pages/Image/SimpleImageViewing")
@@ -51,6 +52,11 @@ const protectedRoute = [
     path: "/image/view-all-image",
     name: "ImagesViewing",
     element: <ImagesViewing />,
+  },
+  {
+    path: "/image/view-all-revceived-image",
+    name: "ViewReceivedImages",
+    element: <ViewReceivedImages />,
   },
   { path: "/album", name: "AlbumsViewing", element: <AlbumsViewing /> },
   {

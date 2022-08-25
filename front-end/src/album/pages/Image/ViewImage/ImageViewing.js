@@ -47,7 +47,7 @@ export default function ImageViewing() {
             Image: {
               xmlns: "https://schemas.microsoft.com/deepzoom/2008",
               Url: `http://localhost:5000/images/dzi/${params.userID}/${params.imgID}/`,
-              Format: "png",
+              Format: "jpeg",
               Overlap: "0",
               TileSize: "256",
               Size: {

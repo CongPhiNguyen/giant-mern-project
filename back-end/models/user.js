@@ -32,15 +32,16 @@ const userSchema = new Schema(
       default: Date.now(),
     },
     ownImages: [{ type: mongoose.Schema.Types.ObjectId, ref: "images" }],
-    receivedImages: {
-      type: Array,
-      default: [],
-    },
+    receivedImages: [{ type: mongoose.Schema.Types.ObjectId, ref: "images" }],
     ownAlbums: [{ type: mongoose.Schema.Types.ObjectId, ref: "albums" }],
     receivedAlbums: [{ type: mongoose.Schema.Types.ObjectId, ref: "albums" }],
     accountState: {
       type: String,
       default: "normal",
+    },
+    storage: {
+      type: Number,
+      default: 0,
     },
   },
   { timestamps: true }

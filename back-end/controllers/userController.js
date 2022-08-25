@@ -1,4 +1,6 @@
 const user = require("../models/user");
+const image = require("../models/image");
+
 const crypto = require("crypto");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -239,6 +241,76 @@ class userController {
       console.log(e);
       res.status(400).send({ error: "Unauthorize token", find: false });
     }
+  };
+
+  searchUser = async (req, res) => {
+    console.log("req.query", req.query);
+    if (!req.query.pattern) {
+      res.status(200).send({ success: false });
+    } else {
+      user
+        .find({
+          $or: [
+            {
+              username: { $regex: req.query.pattern },
+              _id: { $ne: req.query.userID },
+            },
+            {
+              email: { $regex: req.query.pattern },
+              _id: { $ne: req.query.userID },
+            },
+          ],
+        })
+        .then((data) => res.status(200).send({ success: true, userInfo: data }))
+        .catch((err) => {
+          res.status(200).send({ success: false, err: err.message });
+        });
+    }
+  };
+
+  grantedAccess = async (req, res) => {
+    console.log(req.query);
+    const addImageIDToUser = (nextFunction) => {
+      user
+        .findByIdAndUpdate(req.query.userID, {
+          $push: { receivedImages: req.query.imageID },
+        })
+        .then((data) => {
+          nextFunction();
+        })
+        .catch((err) => {
+          res.status(200).send({
+            success: false,
+            err: err.message,
+            message: "Can't add imageID into user",
+          });
+        });
+    };
+    const addImageReceiverUser = (nextFunction) => {
+      image
+        .findByIdAndUpdate(req.query.imageID, {
+          $push: { sharedPeople: req.query.userID },
+        })
+        .then((data) => {
+          nextFunction();
+        })
+        .catch((err) => {
+          res.status(200).send({
+            success: false,
+            err: err.message,
+            message: "Can't add userID into image",
+          });
+        });
+    };
+    const finalFunction = () => {
+      res.status(200).send({ success: true });
+    };
+
+    addImageIDToUser(() => {
+      addImageReceiverUser(() => {
+        finalFunction();
+      });
+    });
   };
 }
 

@@ -80,7 +80,6 @@ function Login() {
   const loginSuccessHandle = (username, token) => {
     toast("Login successfully");
     // localStorage.setItem("jwt", data.data.token);
-    cookiesUtil.set("_username", username);
     cookiesUtil.setAccessToken(token);
     const decodeToken = () => {
       let jwtInfor;

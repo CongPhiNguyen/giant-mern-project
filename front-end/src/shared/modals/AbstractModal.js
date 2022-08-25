@@ -34,9 +34,9 @@ export default function AbstractModal() {
     >
       <div
         className="modal-overlay"
-        onClick={() => {
-          closeModal();
-        }}
+        // onClick={() => {
+        //   closeModal();
+        // }}
       >
         <CSSTransition
           in={modalInfo.modalDisplay}

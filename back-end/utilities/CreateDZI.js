@@ -4,7 +4,7 @@ const extract = require("extract-zip");
 
 const createDZIFromBuffer = (buffer, path, fileName, onSuccess) => {
   sharp(buffer)
-    .png()
+    .jpeg()
     .tile({
       size: 256,
       overlap: 0,

@@ -9,6 +9,12 @@ const JWT_SECRET = "congphi";
 const user = require("../models/user");
 const image = require("../models/image");
 const process = require("../models/proccess");
+const getFolderSize = require("get-folder-size");
+const getFilesizeInBytes = (filename) => {
+  var stats = fs.statSync(filename);
+  var fileSizeInBytes = stats.size;
+  return fileSizeInBytes;
+};
 
 let imageUploadingProgress = [];
 const createDZIFromBuffer = require("../utilities/CreateDZI");
@@ -39,6 +45,17 @@ class imageController {
 
     let processID = uuidv4();
 
+    const addSizeToUserDatabase = (size) => {
+      user
+        .findByIdAndUpdate(req.body.userID, { $inc: { storage: size } })
+        .then((data) => {
+          console.log(data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    };
+
     if (req.files.length !== 0) {
       imageUploadingProgress.push({ id: processID, img: [] });
       for (let index = 0; index < req.files.length; index++) {
@@ -59,6 +76,7 @@ class imageController {
           sharp(file.buffer)
             .resize({ width: 200 })
             .toFile(filePath + `/${fileNameList[index]}_resize.jpg`);
+
           const newImage = await new image({
             imageRoot: [ownUser.userRoot, fileNameList[index]],
             imageName: imgInfo.title,
@@ -77,6 +95,12 @@ class imageController {
             .save()
             .then((data) => {
               listIDFileSaved.push(data._id);
+              const fileSize =
+                getFilesizeInBytes(
+                  filePath + `/${fileNameList[index]}_resize.jpg`
+                ) +
+                getFilesizeInBytes(filePath + `/${fileNameList[index]}.jpg`);
+              addSizeToUserDatabase(fileSize);
             })
             .catch((err) => {});
           addNewUploadInfor("uploaded");
@@ -128,7 +152,9 @@ class imageController {
         .then((data) => {
           // console.log(data);
         })
-        .catch((err) => {});
+        .catch((err) => {
+          console.log("err add storage", err);
+        });
     };
     const updateImageProcess = () => {
       req.files.forEach((file, index) => {
@@ -138,6 +164,24 @@ class imageController {
             __dirname + `/../privates/${ownUser.userRoot}/`,
             `${fileNameList[index]}`,
             () => {
+              const dir =
+                __dirname +
+                `/../privates/${ownUser.userRoot}/${fileNameList[index]}`;
+              // fastFolderSize(
+              //   __dirname +
+              //     `/../privates/${ownUser.userRoot}/${fileNameList[index]}`,
+              //   (err, bytes) => {
+              //     if (err) {
+              //     } else addSizeToUserDatabase(bytes);
+              //   }
+              // );
+              getFolderSize(dir, function (err, size) {
+                if (err) {
+                  throw err;
+                } else {
+                  addSizeToUserDatabase(size);
+                }
+              });
               const updateProcess = () => {
                 process
                   .findByIdAndUpdate(
@@ -308,10 +352,11 @@ class imageController {
         if (err) {
           console.log(err);
           res.status(200).send({ success: false, err: err.message });
-        }
-        console.log(decoded);
-        if (decoded.userID) {
-          nextFunction(decoded.userID);
+        } else {
+          console.log(decoded);
+          if (decoded?.userID) {
+            nextFunction(decoded.userID);
+          } else res.status(200).send({ success: false, err: err.message });
         }
       });
     };
@@ -436,6 +481,26 @@ class imageController {
         res.status(204).send({
           err: err.message,
           message: "Error when changing image information",
+        });
+      });
+  };
+
+  getAllReceivedImage = async (req, res) => {
+    // console.log(req.query);
+    console.log("get user received image");
+    await user
+      .findById(req.query.userID)
+      .populate({ path: "receivedImages", options: { strictPopulate: false } })
+      .then((data) => {
+        res
+          .status(200)
+          .send({ success: true, imageInfo: data.receivedImages || [] });
+      })
+      .catch((err) => {
+        res.status(200).send({
+          success: false,
+          err: err.message,
+          message: "Can't get user received images",
         });
       });
   };

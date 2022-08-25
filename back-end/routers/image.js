@@ -33,6 +33,7 @@ router.post(
 );
 
 router.get("/get-all-own-images", imageController.getAllOwnImage);
+router.get("/get-all-received-images", imageController.getAllReceivedImage);
 router.get("/check-progress-upload", imageController.checkUploadProgress);
 router.get("/get-concrete-image", imageController.getConcreteImagebyPathName);
 router.get("/:user-root/:image-root", imageController.displayImage);
