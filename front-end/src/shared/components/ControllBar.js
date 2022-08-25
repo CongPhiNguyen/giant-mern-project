@@ -9,6 +9,12 @@ export default function ControllBar() {
   const userInfo = useSelector(
     (state) => state.sharedSlice.currentUserInformation
   );
+  const ownImageLength = useSelector(
+    (state) => state.imageSlice.currentOwnImages.length
+  );
+  const receivedImageLength = useSelector(
+    (state) => state.imageSlice.currentReceivedImages.length
+  );
   // console.log("userInfo", Object.keys(userInfo).length);
 
   return (
@@ -23,7 +29,7 @@ export default function ControllBar() {
         <p className="title">My own</p>
         <div className="divider"></div>
         <NavLink to="/image/view-all-image" className="content-item">
-          Images({userInfo.ownImages?.length})
+          Images({ownImageLength})
         </NavLink>
         <NavLink to="/album" className="content-item">
           Albums({userInfo.ownAlbums?.length})
@@ -35,8 +41,8 @@ export default function ControllBar() {
       <section className="content-section">
         <p className="title">Received</p>
         <div className="divider"></div>
-        <NavLink to="/image/view-all-revceived-image" className="content-item">
-          Image
+        <NavLink to="/image/view-all-received-image" className="content-item">
+          Image({receivedImageLength})
         </NavLink>
         <p className="content-item">Albums</p>
       </section>

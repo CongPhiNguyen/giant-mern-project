@@ -384,8 +384,19 @@ class imageController {
   };
 
   deleteImage = async (req, res) => {
-    console.log("req.query", req.query);
-    console.log("req.cookies", req.cookies);
+    // console.log("req.query", req.query);
+    // console.log("req.cookies", req.cookies);
+
+    const deleteSizeToUserDatabase = (size) => {
+      user
+        .findByIdAndUpdate(req.query.ownUserID, { $inc: { storage: -size } })
+        .then((data) => {
+          console.log(data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    };
 
     // With database
     const deleteImageInImage = (nextFunction) => {
@@ -421,9 +432,8 @@ class imageController {
     // With server
     const deleteImageAndFolderInServer = (nextFunction) => {
       const imagePath = baseFilePath + JSON.parse(req.query.path).join("/");
-      console.log(imagePath);
+      // console.log(imagePath);
       try {
-        fs.rmSync(imagePath, { recursive: true, force: true });
         fs.unlink(imagePath + ".jpg", (err) => {
           if (err) {
             throw err;

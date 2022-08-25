@@ -1,4 +1,4 @@
-import React, { useState, createRef } from "react";
+import React, { useState, createRef, useEffect } from "react";
 import "./ImagePermission.scss";
 
 import axios from "axios";
@@ -11,6 +11,8 @@ export default function ImagePermission() {
   const userSearchRef = createRef();
   const [userResult, setUserResult] = useState([]);
   const [isSharedIndexSearch, setIsSharedIndexSearch] = useState([]);
+  const [sharedUserInfo, setSharedUserInfo] = useState([]);
+  const [isBanIndex, setIsBanIndex] = useState([]);
 
   const currentSharedImage = useSelector(
     (state) => state.imageSlice.currentSharedImageInfo
@@ -43,7 +45,7 @@ export default function ImagePermission() {
     axios.defaults.withCredentials = true;
     const url = "http://localhost:5000/api/user/granted-access";
     axios
-      .get(url, { params: { userID: userID, imageID: imageID } })
+      .patch(url, { userID: userID, imageID: imageID })
       .then((data) => {
         console.log("data", data);
         if (data.data.success) {
@@ -55,6 +57,39 @@ export default function ImagePermission() {
       });
   };
 
+  useEffect(() => {
+    axios.defaults.withCredentials = true;
+    const listUserID = currentSharedImage.sharedPeople;
+    const url = "http://localhost:5000/api/user/get-users-info";
+    axios
+      .get(url, { params: { userList: listUserID } })
+      .then((data) => {
+        console.log("data", data);
+        if (data.data.success) {
+          // console.log(data.data.userInfo);
+          setSharedUserInfo(data.data.userInfo);
+        }
+      })
+      .catch((err) => {
+        console.log("err", err);
+      });
+  }, [currentSharedImage._id]);
+
+  const banUser = (userID, imageID, index) => {
+    axios.defaults.withCredentials = true;
+    const url = "http://localhost:5000/api/user/ban-access";
+    axios
+      .patch(url, { userID: userID, imageID: imageID })
+      .then((data) => {
+        console.log("data", data);
+        if (data.data.success) {
+          setIsBanIndex((prev) => [...prev, index]);
+        }
+      })
+      .catch((err) => {
+        console.log("err", err);
+      });
+  };
   return (
     <div className="modal-concrete-container">
       <p
@@ -109,6 +144,26 @@ export default function ImagePermission() {
           }
         >
           <h4 className="sub-title">Shared people list</h4>
+          <ul className="list-shared-user">
+            {sharedUserInfo.map((user, index) => {
+              return (
+                <li className="user-concrete">
+                  <p className="name">{user.username}</p>
+                  {isBanIndex.indexOf(index) === -1 ? (
+                    <button
+                      onClick={() =>
+                        banUser(user._id, currentSharedImage._id, index)
+                      }
+                    >
+                      Ban this user
+                    </button>
+                  ) : (
+                    "Banned"
+                  )}
+                </li>
+              );
+            })}
+          </ul>
         </li>
         <li
           className={
@@ -141,6 +196,8 @@ export default function ImagePermission() {
                     <p className="info-concrete">Username: {user.username}</p>
                     <p className="info-concrete">Email: {user.email}</p>
                   </div>
+
+                  {/* Check for shared search and share after that */}
                   {user.receivedImages.indexOf(currentSharedImage._id) === -1 &&
                   isSharedIndexSearch.indexOf(index) === -1 ? (
                     <button

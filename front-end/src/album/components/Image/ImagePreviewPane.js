@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState, createRef } from "react";
 import "./ImagePreviewPane.scss";
 import { Link } from "react-router-dom";
-
+import { useSelector } from "react-redux";
 import axios from "axios";
 import { CSSTransition } from "react-transition-group";
 import { NavLink } from "react-router-dom";
@@ -28,6 +28,10 @@ export default function ImagePreviewPane(props) {
   const [isEdittingName, setIsEdittingName] = useState(false);
   const [isEdittingDescription, setIsEdittingDescription] = useState(false);
   const [isEdittingAltText, setIsEdittingAltText] = useState(false);
+
+  const userInfo = useSelector(
+    (state) => state.sharedSlice.currentUserInformation
+  );
 
   const buttonChangeGroupDOM = (valueChangeType) => {
     return (
@@ -296,20 +300,49 @@ export default function ImagePreviewPane(props) {
             {props.imageInfo?.storage}
           </p>
         </section>
-        <section className="information-permission information-section">
-          <p className="title">Permission</p>
-          <div className="divider"></div>
-          <p className="information-concrete">
-            <label className="information-label">ShareList:</label>
-            {props.imageInfo?.viewedPeople.length +
-              " people viewed this album" ?? ""}
-          </p>
-          <button onClick={() => changePermission()}>Change permission</button>
-        </section>
-        <section className="information-mangage information-section">
-          <p className="title">Manage</p>
-          <div className="divider"></div>
-          <p className="information-concrete">
+
+        {props.imageInfo?.ownPeople === userInfo._id ? (
+          <React.Fragment>
+            <section className="information-permission information-section">
+              <p className="title">Permission</p>
+              <div className="divider"></div>
+              <p className="information-concrete">
+                <label className="information-label">ShareList:</label>
+                {props.imageInfo?.viewedPeople.length +
+                  " people viewed this album" ?? ""}
+              </p>
+              <button onClick={() => changePermission()}>
+                Change permission
+              </button>
+            </section>
+            <section className="information-mangage information-section">
+              <p className="title">Manage</p>
+              <div className="divider"></div>
+              <p className="information-concrete">
+                <label className="information-label">View:</label>
+                <Link
+                  to={`/image/view/${props.imageInfo?.imageRoot[0]}/${props.imageInfo?.imageRoot[1]}`}
+                >
+                  View with opensea
+                </Link>
+                <Link
+                  to={`/image/simple-view/${props.imageInfo?.imageRoot[0]}/${props.imageInfo?.imageRoot[1]}`}
+                >
+                  SimpleView
+                </Link>
+              </p>
+              <div className="button-section">
+                <div>
+                  <button onClick={() => deleteCurrentImage()}>Delete</button>
+                </div>
+                {buttonChangeGroupDOM(valueChangeEnum.NAME)}
+                {buttonChangeGroupDOM(valueChangeEnum.DESCRIPTION)}
+                {buttonChangeGroupDOM(valueChangeEnum.ALT)}
+              </div>
+            </section>
+          </React.Fragment>
+        ) : (
+          <React.Fragment>
             <label className="information-label">View:</label>
             <Link
               to={`/image/view/${props.imageInfo?.imageRoot[0]}/${props.imageInfo?.imageRoot[1]}`}
@@ -321,16 +354,8 @@ export default function ImagePreviewPane(props) {
             >
               SimpleView
             </Link>
-          </p>
-          <div className="button-section">
-            <div>
-              <button onClick={() => deleteCurrentImage()}>Delete</button>
-            </div>
-            {buttonChangeGroupDOM(valueChangeEnum.NAME)}
-            {buttonChangeGroupDOM(valueChangeEnum.DESCRIPTION)}
-            {buttonChangeGroupDOM(valueChangeEnum.ALT)}
-          </div>
-        </section>
+          </React.Fragment>
+        )}
       </div>
     </CSSTransition>
   );

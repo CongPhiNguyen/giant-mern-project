@@ -244,7 +244,7 @@ class userController {
   };
 
   searchUser = async (req, res) => {
-    console.log("req.query", req.query);
+    // console.log("req.query", req.query);
     if (!req.query.pattern) {
       res.status(200).send({ success: false });
     } else {
@@ -269,11 +269,11 @@ class userController {
   };
 
   grantedAccess = async (req, res) => {
-    console.log(req.query);
+    console.log(req.body);
     const addImageIDToUser = (nextFunction) => {
       user
-        .findByIdAndUpdate(req.query.userID, {
-          $push: { receivedImages: req.query.imageID },
+        .findByIdAndUpdate(req.body.userID, {
+          $push: { receivedImages: req.body.imageID },
         })
         .then((data) => {
           nextFunction();
@@ -288,8 +288,8 @@ class userController {
     };
     const addImageReceiverUser = (nextFunction) => {
       image
-        .findByIdAndUpdate(req.query.imageID, {
-          $push: { sharedPeople: req.query.userID },
+        .findByIdAndUpdate(req.body.imageID, {
+          $push: { sharedPeople: req.body.userID },
         })
         .then((data) => {
           nextFunction();
@@ -311,6 +311,69 @@ class userController {
         finalFunction();
       });
     });
+  };
+
+  banAccess = async (req, res) => {
+    console.log("req.body", req.body);
+    const removeImageIDToUser = (nextFunction) => {
+      user
+        .findByIdAndUpdate(req.body.userID, {
+          $pull: { receivedImages: req.body.imageID },
+        })
+        .then((data) => {
+          console.log("data", data);
+          nextFunction();
+        })
+        .catch((err) => {
+          res.status(200).send({
+            success: false,
+            err: err.message,
+            message: "Can't remove imageID from user",
+          });
+        });
+    };
+    const removeImageReceiverUser = (nextFunction) => {
+      image
+        .findByIdAndUpdate(req.body.imageID, {
+          $pull: { sharedPeople: req.body.userID },
+        })
+        .then((data) => {
+          console.log("data", data);
+          nextFunction();
+        })
+        .catch((err) => {
+          res.status(200).send({
+            success: false,
+            err: err.message,
+            message: "Can't remove userID from image",
+          });
+        });
+    };
+    const finalFunction = () => {
+      res.status(200).send({ success: true });
+    };
+
+    removeImageIDToUser(() => {
+      removeImageReceiverUser(() => {
+        finalFunction();
+      });
+    });
+  };
+
+  getListUserInfomationByID = async (req, res) => {
+    console.log("req.query", req.query);
+    user
+      .find({ _id: { $in: req.query.userList } })
+      .then((data) => {
+        res.status(200).send({ success: true, userInfo: data });
+      })
+      .catch((err) => {
+        res.status(200).send({
+          success: false,
+          message: "Can't find user",
+          err: err.message,
+        });
+      });
   };
 }
 

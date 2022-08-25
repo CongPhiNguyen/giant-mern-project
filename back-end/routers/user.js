@@ -9,8 +9,10 @@ router.post("/check-login-info", userController.checkLoginInfo);
 router.post("/sign-up", userController.signUp);
 router.post("/verify-user", userController.verifyUser);
 router.get("/get-concrete-information", userController.getConcreteUserInfo);
+router.patch("/granted-access", userController.grantedAccess);
+router.patch("/ban-access", userController.banAccess);
 router.get("/search", userController.searchUser);
-router.get("/granted-access", userController.grantedAccess);
+router.get("/get-users-info", userController.getListUserInfomationByID);
 router.get("/:id", userController.getUserByID);
 
 module.exports = router;

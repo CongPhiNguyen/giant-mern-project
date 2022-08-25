@@ -95,16 +95,16 @@ export default function ViewReceivedImages() {
           </div>
         </div>
       </div>
-      {/* <ImagePreviewPane
+      <ImagePreviewPane
         closePreviewPane={closePreviewPane}
         display={isDisplayPreviewPane}
         imageInfo={
-          searchInfo.isSearching && searchInfo.module == "ownImage"
+          searchInfo.isSearching && searchInfo.module == "receivedImage"
             ? searchInfo.searchValue[imagesSelectedIndex]
-            : currentOwnImages[imagesSelectedIndex]
+            : currentReceivedImages[imagesSelectedIndex]
         }
         changeIndex={changeCurrrentIndex}
-      /> */}
+      />
     </div>
   );
 }

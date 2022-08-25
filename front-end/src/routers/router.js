@@ -54,7 +54,7 @@ const protectedRoute = [
     element: <ImagesViewing />,
   },
   {
-    path: "/image/view-all-revceived-image",
+    path: "/image/view-all-received-image",
     name: "ViewReceivedImages",
     element: <ViewReceivedImages />,
   },
