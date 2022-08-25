@@ -40,7 +40,7 @@ const protectedRoute = [
   },
   {
     path: "/image/simple-view/:userID/:imgID",
-    name: "ImageViewing",
+    name: "SimpleImageViewing",
     element: <SimpleImageViewing />,
   },
   {
