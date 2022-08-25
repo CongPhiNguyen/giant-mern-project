@@ -434,6 +434,7 @@ class imageController {
       const imagePath = baseFilePath + JSON.parse(req.query.path).join("/");
       // console.log(imagePath);
       try {
+        fs.rmSync(imagePath, { recursive: true, force: true });
         fs.unlink(imagePath + ".jpg", (err) => {
           if (err) {
             throw err;
