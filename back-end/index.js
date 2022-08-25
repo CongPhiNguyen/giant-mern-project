@@ -12,7 +12,9 @@ app.use(cookieParser());
 app.use("/privates", express.static("./privates"));
 // const upload = multer();
 //some middleware
-app.use(cors());
+app.use(
+  cors({ credentials: true, origin: "https://album-mern-project.vercel.ap" })
+);
 // for parsing application/json
 app.use(express.json());
 // for parsing application/x-www-form-urlencoded
