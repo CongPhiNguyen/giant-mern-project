@@ -13,7 +13,7 @@ app.use("/privates", express.static("./privates"));
 // const upload = multer();
 //some middleware
 app.use(
-  cors({ credentials: true, origin: "https://album-mern-project.vercel.ap" })
+  cors({ credentials: true, origin: "https://album-mern-project.vercel.app" })
 );
 // for parsing application/json
 app.use(express.json());
