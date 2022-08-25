@@ -12,7 +12,7 @@ app.use(cookieParser());
 app.use("/privates", express.static("./privates"));
 // const upload = multer();
 //some middleware
-app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
+app.use(cors());
 // for parsing application/json
 app.use(express.json());
 // for parsing application/x-www-form-urlencoded
