@@ -3,6 +3,7 @@ import "./AlbumPreviewPane.scss";
 
 import axios from "axios";
 import { CSSTransition } from "react-transition-group";
+import API from "../../../config/API";
 
 export default function PreviewPane(props) {
   console.log(props.albumInfo);
@@ -36,7 +37,7 @@ export default function PreviewPane(props) {
   useEffect(() => {
     const getUserInformationByID = (id) => {
       axios.defaults.withCredentials = true;
-      const url = "http://localhost:5000/api/user/";
+      const url = API.PREFIX_URL + "/api/user/";
       axios
         .get(url + id)
         .then((data) => {

@@ -1,7 +1,7 @@
 import React from "react";
 import "./ImageGroupDisplayer.scss";
-
-const LINK_IMG = "http://localhost:5000/images/";
+import API from "../../../config/API";
+const LINK_IMG = API.PREFIX_URL + "/images/";
 
 export default function ImageGroupDisplayer(props) {
   console.log("ImageGroupDisplayer props", props);

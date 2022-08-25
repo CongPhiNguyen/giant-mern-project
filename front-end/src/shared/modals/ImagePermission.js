@@ -1,6 +1,6 @@
 import React, { useState, createRef, useEffect } from "react";
 import "./ImagePermission.scss";
-
+import API from "../../config/API";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { hideModal } from "./ModalSlice";
@@ -24,7 +24,7 @@ export default function ImagePermission() {
 
   const searchUser = () => {
     axios.defaults.withCredentials = true;
-    const url = "http://localhost:5000/api/user/search";
+    const url = API.PREFIX_URL + "/api/user/search";
     axios
       .get(url, {
         params: { pattern: userSearchRef.current.value, userID: userInfo._id },
@@ -43,7 +43,7 @@ export default function ImagePermission() {
 
   const addPermission = (userID, imageID, index) => {
     axios.defaults.withCredentials = true;
-    const url = "http://localhost:5000/api/user/granted-access";
+    const url = API.PREFIX_URL + "/api/user/granted-access";
     axios
       .patch(url, { userID: userID, imageID: imageID })
       .then((data) => {
@@ -60,7 +60,7 @@ export default function ImagePermission() {
   useEffect(() => {
     axios.defaults.withCredentials = true;
     const listUserID = currentSharedImage.sharedPeople;
-    const url = "http://localhost:5000/api/user/get-users-info";
+    const url = API.PREFIX_URL + "/api/user/get-users-info";
     axios
       .get(url, { params: { userList: listUserID } })
       .then((data) => {
@@ -77,7 +77,7 @@ export default function ImagePermission() {
 
   const banUser = (userID, imageID, index) => {
     axios.defaults.withCredentials = true;
-    const url = "http://localhost:5000/api/user/ban-access";
+    const url = API.PREFIX_URL + "/api/user/ban-access";
     axios
       .patch(url, { userID: userID, imageID: imageID })
       .then((data) => {

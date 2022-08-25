@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 
 import "./ImageViewing.scss";
+import API from "../../../../config/API";
 
 export default function ImageViewing() {
   const params = useParams();
@@ -13,7 +14,7 @@ export default function ImageViewing() {
   useEffect(() => {
     const getImageInfo = () => {
       axios.defaults.withCredentials = true;
-      const url = "http://localhost:5000/api/image/get-concrete-image";
+      const url = API.PREFIX_URL + "/api/image/get-concrete-image";
       axios
         .get(url, {
           params: {
@@ -46,7 +47,7 @@ export default function ImageViewing() {
           tileSources: {
             Image: {
               xmlns: "https://schemas.microsoft.com/deepzoom/2008",
-              Url: `http://localhost:5000/images/dzi/${params.userID}/${params.imgID}/`,
+              Url: `${API.PREFIX_URL}/images/dzi/${params.userID}/${params.imgID}/`,
               Format: "jpeg",
               Overlap: "0",
               TileSize: "256",

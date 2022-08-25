@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { setProcessingImages } from "../../imageSlice";
 import UploadingProgress from "../../components/Image/UploadingProgress";
-
+import API from "../../../config/API";
 const uploadFilterEnum = {
   PROCESSING: "PROCESSING",
   PROCESSED: "PROCESSED",
@@ -46,7 +46,7 @@ export default function ProcessUploading() {
     };
     axios
       .get(
-        "http://localhost:5000/api/image/check-progress-upload",
+        API.PREFIX_URL + "/api/image/check-progress-upload",
         { params: { userID: userInfo._id } },
         { withCredentials: true }
       )

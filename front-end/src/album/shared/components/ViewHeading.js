@@ -5,7 +5,7 @@ import axios from "axios";
 import { useEffect } from "react";
 import { setToSearchImage } from "../../imageSlice";
 import { useDispatch } from "react-redux";
-
+import API from "../../../config/API";
 export default function ViewHeading(props) {
   console.log(props);
   const dispatch = useDispatch();
@@ -20,7 +20,7 @@ export default function ViewHeading(props) {
   const searchForName = () => {
     if (props.type == "image" && props.permit == "own") {
       axios.defaults.withCredentials = true;
-      const url = "http://localhost:5000/api/image/own/search";
+      const url = API.PREFIX_URL + "/api/image/own/search";
       const paramToSearch = { userID: userInfo._id };
       axios
         .get(url, {

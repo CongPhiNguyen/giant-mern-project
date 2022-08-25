@@ -8,7 +8,7 @@ import { cookiesUtil } from "../../utilities/cookies";
 import { parseJwt } from "../../utilities/jwt";
 import { useDispatch } from "react-redux";
 import { setCurrentUser } from "../../shared/sharedSlice";
-
+import API from "../../config/API";
 import "./login.scss";
 // TODO: put here into enviroment varibale
 const CAPTCHA_SITE_KEY = "6LcjxgkhAAAAAHIhfKuWWgc07YASZozNywrkQM_6";
@@ -48,7 +48,7 @@ function Login() {
   // Validation section
   const checkUserExist = async (username) => {
     return await axios
-      .post("http://localhost:5000/api/user/exist-username", {
+      .post(API.PREFIX_URL + "/api/user/exist-username", {
         username: username,
       })
       .then((data) => {
@@ -107,7 +107,7 @@ function Login() {
   // Login and otp section
   const checkCorrectLoginInfo = async (username, password, otp) => {
     await axios
-      .post("http://localhost:5000/api/user/check-login-info", {
+      .post(API.PREFIX_URL + "/api/user/check-login-info", {
         username: username,
         password: password,
         otp: otp,
@@ -141,7 +141,7 @@ function Login() {
     // }
 
     axios
-      .post("http://localhost:5000/api/otp/make-otp-login", {
+      .post(API.PREFIX_URL + "/api/otp/make-otp-login", {
         username: username,
       })
       .then((data) => {

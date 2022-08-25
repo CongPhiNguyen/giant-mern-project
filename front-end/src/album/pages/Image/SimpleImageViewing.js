@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "./SimpleImageViewing.scss";
 
 import { useParams } from "react-router-dom";
+import API from "../../../config/API";
 
 export default function SimpleImageViewing() {
   const params = useParams();
@@ -96,7 +97,7 @@ export default function SimpleImageViewing() {
         <div className="component-container">
           <div className="img-wrapper">
             <img
-              src={`http://localhost:5000/images/${params.userID}/${params.imgID}`}
+              src={`${API.PREFIX_URL}/images/${params.userID}/${params.imgID}`}
               alt=""
               className="img-concrete"
               style={imgAttribute}

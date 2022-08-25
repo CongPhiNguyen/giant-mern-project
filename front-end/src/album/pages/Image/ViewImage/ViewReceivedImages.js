@@ -9,7 +9,7 @@ import ImageDisplayer from "../../../components/Image/ViewImage/ImageDisplayer";
 import ImagePreviewPane from "../../../components/Image/ImagePreviewPane";
 import ImageGroupDisplayer from "../../../components/Image/ImageGroupDisplayer";
 import ViewHeadingImage from "../../../components/Image/Search/ViewHeadingImage";
-
+import API from "../../../../config/API";
 // Redux
 import { setCurrentReceivedImages } from "../../../imageSlice";
 
@@ -34,7 +34,7 @@ export default function ViewReceivedImages() {
     const getAllUserOwnImage = () => {
       axios
         .get(
-          "http://localhost:5000/api/image/get-all-received-images",
+          API.PREFIX_URL + "/api/image/get-all-received-images",
           { params: { userID: userInfo._id } },
           { withCredentials: true }
         )

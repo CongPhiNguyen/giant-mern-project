@@ -1,5 +1,6 @@
 import React from "react";
 import "./ImageDisplayer.scss";
+import API from "../../../../config/API";
 
 export default function ImageDisplayer(props) {
   console.log("props", props);
@@ -14,7 +15,7 @@ export default function ImageDisplayer(props) {
     >
       <div className="image-container">
         <img
-          src={`http://localhost:5000/images/${props.imageInfo?.imageRoot[0]}/${props.imageInfo?.imageRoot[1]}_resize`}
+          src={`${API.PREFIX_URL}/images/${props.imageInfo?.imageRoot[0]}/${props.imageInfo?.imageRoot[1]}_resize`}
           alt=""
           className="image-concrete"
         />

@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { setToSearchImage } from "../../../imageSlice";
 import { useNavigate } from "react-router-dom";
+import API from "../../../../config/API";
 
 export default function ViewHeadingImage() {
   const dispatch = useDispatch();
@@ -20,7 +21,7 @@ export default function ViewHeadingImage() {
 
   const searchForValue = () => {
     axios.defaults.withCredentials = true;
-    const url = "http://localhost:5000/api/image/own/search";
+    const url = API.PREFIX_URL + "/api/image/own/search";
     const paramToSearch = { userID: userInfo._id };
     if (searchOption === "name") {
       paramToSearch.namePattern = searchBoxRef.current.value;

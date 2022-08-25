@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux/es/exports";
 import "./AddNewAlbum.scss";
 import { toast } from "react-toastify";
 import axios from "axios";
-
+import API from "../../config/API";
 import { hideModal } from "./ModalSlice";
 
 export default function AddNewAlbum() {
@@ -20,7 +20,7 @@ export default function AddNewAlbum() {
       userID: userInfo._id,
     };
     axios
-      .post("http://localhost:5000/api/album/create-album", dataAdd, {
+      .post(API.PREFIX_URL + "/api/album/create-album", dataAdd, {
         withCredentials: true,
       })
       .then((data) => {

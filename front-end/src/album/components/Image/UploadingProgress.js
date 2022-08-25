@@ -1,11 +1,11 @@
 import React from "react";
 import "./UploadingProgress.scss";
-
+import API from "../../../config/API";
 import { toReadAbleDateTime } from "../../../utilities/dayTime";
 const renderLinkImage = (imageRoots) => {
   try {
     if (imageRoots.length == 2)
-      return `http://localhost:5000/images/${imageRoots[0]}/${imageRoots[1]}_resize`;
+      return `${API.PREFIX_URL}/images/${imageRoots[0]}/${imageRoots[1]}_resize`;
     else return "";
   } catch (e) {
     return "";

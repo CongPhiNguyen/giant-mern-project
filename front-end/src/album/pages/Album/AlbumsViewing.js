@@ -9,6 +9,7 @@ import ViewHeading from "../../shared/components/ViewHeading";
 
 import { useDispatch } from "react-redux/es/hooks/useDispatch";
 import { showModal } from "../../../shared/modals/ModalSlice";
+import API from "../../../config/API";
 
 export default function AlbumsViewing() {
   const dispatch = useDispatch();
@@ -25,7 +26,7 @@ export default function AlbumsViewing() {
     const getAllUserAlbums = () => {
       axios
         .get(
-          "http://localhost:5000/api/album/get-all-user-album",
+          API.PREFIX_URL + "/api/album/get-all-user-album",
           { params: { username: userInfo.username } },
           { withCredentials: true }
         )

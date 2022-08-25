@@ -8,7 +8,7 @@ import { parseJwt } from "../../utilities/jwt";
 import { cookiesUtil } from "../../utilities/cookies";
 import { useDispatch } from "react-redux";
 import { setCurrentUser, setCurrentUserInformation } from "../sharedSlice";
-
+import API from "../../config/API";
 import "./Header.scss";
 
 function Header() {
@@ -46,7 +46,7 @@ function Header() {
 
   useEffect(() => {
     const getUserConcrete = () => {
-      const url = "http://localhost:5000/api/user/get-concrete-information";
+      const url = API.PREFIX_URL + "/api/user/get-concrete-information";
       axios
         .get(
           url,

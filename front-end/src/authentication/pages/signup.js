@@ -4,7 +4,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "./signup.scss";
 
 import { useNavigate } from "react-router-dom";
-
+import API from "../../config/API";
 export default function SignUp(props) {
   const navigate = useNavigate();
 
@@ -26,7 +26,7 @@ export default function SignUp(props) {
 
   const checkUsernameExist = (username) => {
     axios
-      .post("http://localhost:5000/api/user/exist-username", {
+      .post(API.PREFIX_URL + "/api/user/exist-username", {
         username: username,
       })
       .then((data) => {
@@ -57,7 +57,7 @@ export default function SignUp(props) {
 
   const checkEmailExist = (email) => {
     axios
-      .post("http://localhost:5000/api/user/exist-email", {
+      .post(API.PREFIX_URL + "/api/user/exist-email", {
         email: email,
       })
       .then((data) => {
@@ -83,7 +83,7 @@ export default function SignUp(props) {
       return;
     }
     axios
-      .post("http://localhost:5000/api/user/sign-up", {
+      .post(API.PREFIX_URL + "/api/user/sign-up", {
         email: email,
         username: username,
         password: password,
@@ -105,7 +105,7 @@ export default function SignUp(props) {
 
   const sendOTP = (username, email) => {
     axios
-      .post("http://localhost:5000/api/otp/make-otp-sign-up", {
+      .post(API.PREFIX_URL + "/api/otp/make-otp-sign-up", {
         username: username,
         email: email,
       })
@@ -140,7 +140,7 @@ export default function SignUp(props) {
   const submitOTP = (username, otp) => {
     // console.log(otp);
     axios
-      .post("http://localhost:5000/api/otp/check-otp", {
+      .post(API.PREFIX_URL + "/api/otp/check-otp", {
         username: username,
         otp: otp,
         time: new Date(),

@@ -13,6 +13,7 @@ import {
 } from "../../imageSlice";
 import { toast } from "react-toastify";
 import { showModal } from "../../../shared/modals/ModalSlice";
+import API from "../../../config/API";
 
 const valueChangeEnum = {
   NAME: "NAME",
@@ -97,7 +98,7 @@ export default function ImagePreviewPane(props) {
   useEffect(() => {
     const getUserInformationByID = (id) => {
       axios.defaults.withCredentials = true;
-      const url = "http://localhost:5000/api/user/";
+      const url = API.PREFIX_URL + "/api/user/";
       axios
         .get(url + id)
         .then((data) => {
@@ -124,7 +125,7 @@ export default function ImagePreviewPane(props) {
 
   const deleteCurrentImage = () => {
     axios.defaults.withCredentials = true;
-    const url = "http://localhost:5000/api/image";
+    const url = API.PREFIX_URL + "/api/image";
     axios
       .delete(url, {
         params: {
@@ -172,7 +173,7 @@ export default function ImagePreviewPane(props) {
       editValue.alt = alt;
     }
     axios.defaults.withCredentials = true;
-    const url = "http://localhost:5000/api/image";
+    const url = API.PREFIX_URL + "/api/image";
     axios
       .patch(url, {
         id: props.imageInfo?._id,

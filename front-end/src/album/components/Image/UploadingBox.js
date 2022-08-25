@@ -12,6 +12,7 @@ import { setLoadImageCount, setUploadingImageInfo } from "../../imageSlice";
 import { useDispatch } from "react-redux";
 
 import { useNavigate } from "react-router-dom";
+import API from "../../../config/API";
 
 export default function UploadingBox() {
   const dispatch = useDispatch();
@@ -41,7 +42,7 @@ export default function UploadingBox() {
     const getAllUserAlbums = () => {
       axios
         .get(
-          "http://localhost:5000/api/album/get-all-user-album",
+          API.PREFIX_URL + "/api/album/get-all-user-album",
           { params: { username: userInfo.username } },
           { withCredentials: true }
         )
@@ -101,7 +102,7 @@ export default function UploadingBox() {
         );
       },
     };
-    const url = "http://localhost:5000/api/image/upload";
+    const url = API.PREFIX_URL + "/api/image/upload";
     axios
       .post(url, uploadImagesData, config)
       .then((data) => {
