@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "test",
-    "start": "forever start index.js"
+    "start": "nodemon index.js"
   },
   "author": "ncphi",
   "license": "ISC",
