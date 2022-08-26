@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunkfe_authen=self.webpackChunkfe_authen||[]).push([[363],{5363:function(e,n,c){c.r(n),c.d(n,{default:function(){return a}});c(2791);var t=c(184);function a(){return(0,t.jsx)("div",{className:"page-container",children:(0,t.jsx)("div",{className:"content-container",children:"Welcome to homescreen"})})}}}]);
+//# sourceMappingURL=363.ae1c2b48.chunk.js.map

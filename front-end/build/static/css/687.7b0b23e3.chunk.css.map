@@ -1,0 +1,1 @@
+{"version":3,"file":"static/css/687.7b0b23e3.chunk.css","mappings":"AAAA,QAEE,wBADA,UACA","sources":["album/pages/Image/ViewImage/ImageViewing.scss"],"sourcesContent":[".slide1 {\r\n  width: 100%;\r\n  height: calc(100% - 6em);\r\n}\r\n"],"names":[],"sourceRoot":""}
